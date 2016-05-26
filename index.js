@@ -5,6 +5,7 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const root = require( 'app-root-dir' ).get()
 
+
 const tmpl = function( opts ) {
 
   let commands = fs.readdirSync( path.join( root, 'commands' ) )
@@ -21,19 +22,19 @@ const tmpl = function( opts ) {
         }
       }, {} )
 
-  return {
+  return Object.assign( commands, {
     run: function( cmd, args ) {
-
-      if ( commands[ cmd ] ) {
-        return commands[ cmd ]( Object.assign( opts, {
-          _: args
-        }))
+      if ( !commands[ cmd ] ) {
+        console.log( `'${ cmd }' is not a command` )
+        console.log( `See 'tmpl --help'` )
       }
 
-      console.log( `'${ cmd }' is not a command` )
-      console.log( `See 'tmpl --help'` )
+      // Run command
+      commands[ cmd ]( Object.assign( opts, {
+        _: args
+      }))
     }
-  }
+  })
 }
 
 module.exports = tmpl

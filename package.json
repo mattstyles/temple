@@ -31,6 +31,7 @@
     "configstore": "^2.0.0",
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "xdg-basedir": "^2.0.0"
   }
 }
