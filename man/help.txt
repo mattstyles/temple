@@ -1,0 +1,9 @@
+
+Usage
+  list          Lists available template files
+  write <tmpl>  Writes template file to stdout
+
+Examples
+  $ tmpl write .gitignore > .gitignore
+
+Run 'tmpl <COMMAND> --help' for more information on a command
