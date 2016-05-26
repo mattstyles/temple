@@ -1,0 +1,27 @@
+{
+  "name": "@mattstyles/tmpl",
+  "version": "0.0.0",
+  "description": "Creates files from templates",
+  "main": "index.js",
+  "bin": {
+    "tmpl": "./"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattstyles/tmpl.git"
+  },
+  "keywords": [
+    "template",
+    "file",
+    "scaffold"
+  ],
+  "author": "Matt Styles <matt@veryfizzyjelly.com> (http://github.com/mattstyles)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattstyles/tmpl/issues"
+  },
+  "homepage": "https://github.com/mattstyles/tmpl#readme"
+}
