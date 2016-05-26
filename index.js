@@ -4,7 +4,6 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const root = require( 'app-root-dir' ).get()
-const alias = require( './utils/alias' )()
 
 const tmpl = function( opts ) {
 
@@ -24,7 +23,6 @@ const tmpl = function( opts ) {
 
   return Object.assign( commands, {
     run: function( cmd, args ) {
-      cmd = alias( cmd )
       if ( !commands[ cmd ] ) {
         console.log( `'${ cmd }' is not a command` )
         console.log( `See 'tmpl --help'` )

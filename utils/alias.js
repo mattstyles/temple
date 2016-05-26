@@ -1,7 +1,7 @@
 
 'use strict'
 
-const defined = require( 'defined' )
+const alias = require( '@mattstyles/alias' )
 
 /**
  * Map of aliases
@@ -14,13 +14,7 @@ const DEFAULT_ALIASES = {
 /**
  * Returns aliased commands
  */
-module.exports = function alias( aliases ) {
-  aliases = defined( aliases, DEFAULT_ALIASES )
-  return function( cmd ) {
-    if ( aliases[ cmd ] ) {
-      return aliases[ cmd ]
-    }
-
-    return cmd
-  }
+const aliases = alias( DEFAULT_ALIASES )
+module.exports = function getAlias( cmd ) {
+  return aliases( cmd )
 }
