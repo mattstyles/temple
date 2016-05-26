@@ -11,7 +11,8 @@ const cli = meow({
   help: false
 }, {
   alias: {
-    h: 'help'
+    h: 'help',
+    v: 'verbose'
   }
 })
 const cmd = cli.input[ 0 ]
@@ -21,15 +22,16 @@ if ( !cmd || cmd === 'help' ) {
   return
 }
 
-// console.log( cli )
+if ( cmd === 'version' || cli.flags.version ) {
+  process.stdout.write( cli.pkg.version )
+  return
+}
 
 if ( cli.flags.help ) {
   usage( cmd )
   return
 }
 
-tmpl( cmd, {
-  cmd: cli.input.slice( 1 ),
-  flags: cli.flags,
-  pkg: cli.pkg
-})
+// Let's go
+tmpl( cli.flags )
+  .run( cmd, cli.input.slice( 1 ) )

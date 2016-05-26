@@ -8,14 +8,7 @@
  *   tmpl write .gitignore
  */
 
-exports.command = 'write'
-
-exports.description = 'Writes specific template files to a location'
-
-exports.builder = {}
-
-exports.handler = function( argv ) {
-
-  console.log( 'writing files' )
-  console.log( argv )
+module.exports = function( opts ) {
+  console.log( 'write' )
+  console.log( opts )
 }

@@ -28,6 +28,7 @@
   "dependencies": {
     "app-root-dir": "^1.0.2",
     "bluebird": "^3.4.0",
+    "configstore": "^2.0.0",
     "meow": "^3.7.0",
     "minimist": "^1.2.0",
     "xdg-basedir": "^2.0.0"
