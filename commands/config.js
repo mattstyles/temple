@@ -8,30 +8,47 @@
  *   temple config path.data ~/.data
  */
 
+const prompt = require( 'inquirer' ).prompt
 const usage = require( '../utils/usage' )
 const conf = require( '../utils/conf' )()
 const pkg = require( '../package.json' )
 
+
 module.exports = function( opts ) {
   // Handle remove or delete flags
   if ( opts.rm ) {
-    let target = opts.rm === true
+    let key = opts.rm === true
       ? opts._[ 0 ]
       : opts.rm
 
-    if ( !target ) {
-      console.log( `{ pkg.shortname }: Specify key to remove` )
-      console.log( `See 'temple config --help'` )
+    if ( !key ) {
+      console.log( `${ pkg.shortname }: Specify key to remove` )
+      console.log( `See '${ pkg.shortname } config --help'` )
       return
     }
 
-    let value = conf.get( target )
+    let value = conf.get( key )
 
     if ( typeof value === 'object' ) {
       // @TODO prompt for confirmation on nested value
+      prompt([
+        {
+          type: 'confirm',
+          name: 'remove',
+          message: `'${ key }' is a nested value, are you sure you want to delete?`,
+          default: false
+        }
+      ]).then( answers => {
+        if ( answers.remove ) {
+          conf.del( key )
+          return
+        }
+      })
+
+      return
     }
 
-    conf.del( target )
+    conf.del( key )
     return
   }
 
