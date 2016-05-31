@@ -6,6 +6,8 @@
  *
  * @example
  *   temple config path.data ~/.data
+ *   temple config path.data
+ *   temple config --rm path.data
  */
 
 const prompt = require( 'inquirer' ).prompt
@@ -63,9 +65,9 @@ module.exports = function( opts ) {
 
   // Get or set based on number of arguments
   if ( !value ) {
-    console.log( conf.get( key ) )
+    console.log( JSON.stringify( conf.get( key ) ) )
     return
   }
 
-  return conf.set( key, value )
+  conf.set( key, value )
 }
