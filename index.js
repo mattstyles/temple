@@ -26,7 +26,7 @@ const temple = function( opts ) {
     run: function( cmd, args ) {
       if ( !commands[ cmd ] ) {
         console.log( `${ pkg.shortname }: '${ cmd }' is not a command` )
-        console.log( `See 'tmpl --help'` )
+        console.log( `See 'temple --help'` )
         return
       }
 

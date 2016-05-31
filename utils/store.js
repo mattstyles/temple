@@ -10,7 +10,7 @@ const path = require( 'path' )
 const mkdirp = require( 'mkdirp' )
 const basedir = require( 'xdg-basedir' )
 const pkg = require( '../package.json' )
-const conf = require( './config' )()
+const conf = require( './conf' )()
 
 const DEFAULT_PATH = conf.get( 'dataDir' )
 
