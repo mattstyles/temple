@@ -5,7 +5,7 @@
   "description": "Creates files from templates",
   "main": "index.js",
   "bin": {
-    "tmpl": "cli.js"
+    "temple": "cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

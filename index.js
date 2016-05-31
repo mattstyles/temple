@@ -4,6 +4,8 @@
 const fs = require( 'fs' )
 const path = require( 'path' )
 const root = require( 'app-root-dir' ).get()
+const pkg = require( './package.json' )
+const conf = require( './utils/config' )
 
 const temple = function( opts ) {
 
@@ -24,7 +26,7 @@ const temple = function( opts ) {
   return Object.assign( commands, {
     run: function( cmd, args ) {
       if ( !commands[ cmd ] ) {
-        console.log( `tmpl: '${ cmd }' is not a command` )
+        console.log( `${ pkg.shortname }: '${ cmd }' is not a command` )
         console.log( `See 'tmpl --help'` )
         return
       }
