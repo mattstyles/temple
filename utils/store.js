@@ -12,7 +12,7 @@ const basedir = require( 'xdg-basedir' )
 const pkg = require( '../package.json' )
 const conf = require( './conf' )()
 
-const DEFAULT_PATH = conf.get( 'dataDir' )
+const DEFAULT_PATH = conf.get( 'path.data' )
 
 module.exports = function store( dataDir ) {
   dataDir = dataDir || DEFAULT_PATH

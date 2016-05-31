@@ -17,6 +17,12 @@ const pkg = require( '../package.json' )
 
 
 module.exports = function( opts ) {
+  // Handle showing everything from config
+  if ( opts.all ) {
+    console.log( JSON.stringify( conf.all ) )
+    return
+  }
+
   // Handle remove or delete flags
   if ( opts.rm ) {
     let key = opts.rm === true
