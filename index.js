@@ -5,7 +5,7 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const root = require( 'app-root-dir' ).get()
 
-const tmpl = function( opts ) {
+const temple = function( opts ) {
 
   let commands = fs.readdirSync( path.join( root, 'commands' ) )
     .map( filename => filename.replace( /\.js$/, '' ) )
@@ -24,8 +24,9 @@ const tmpl = function( opts ) {
   return Object.assign( commands, {
     run: function( cmd, args ) {
       if ( !commands[ cmd ] ) {
-        console.log( `'${ cmd }' is not a command` )
+        console.log( `tmpl: '${ cmd }' is not a command` )
         console.log( `See 'tmpl --help'` )
+        return
       }
 
       // Run command
@@ -36,4 +37,4 @@ const tmpl = function( opts ) {
   })
 }
 
-module.exports = tmpl
+module.exports = temple

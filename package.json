@@ -1,18 +1,18 @@
 {
-  "name": "@mattstyles/tmpl",
-  "shortname": "tmpl",
+  "name": "@mattstyles/temple",
+  "shortname": "temple",
   "version": "0.0.0",
   "description": "Creates files from templates",
   "main": "index.js",
   "bin": {
-    "tmpl": "./"
+    "tmpl": "cli.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattstyles/tmpl.git"
+    "url": "git+https://github.com/mattstyles/temple.git"
   },
   "keywords": [
     "template",
@@ -22,9 +22,9 @@
   "author": "Matt Styles <matt@veryfizzyjelly.com> (http://github.com/mattstyles)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mattstyles/tmpl/issues"
+    "url": "https://github.com/mattstyles/temple/issues"
   },
-  "homepage": "https://github.com/mattstyles/tmpl#readme",
+  "homepage": "https://github.com/mattstyles/temple#readme",
   "dependencies": {
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",

@@ -5,7 +5,7 @@
  * Lists available template files
  *
  * @example
- *   tmpl list
+ *   temple list
  */
 
 const fs = require( 'fs' )
