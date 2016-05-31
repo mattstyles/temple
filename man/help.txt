@@ -2,6 +2,7 @@
 Usage
   list          Lists available template files
   write <tmpl>  Writes template file to stdout
+  config        Sets and displays config
 
 Examples
   $ tmpl write .gitignore > .gitignore

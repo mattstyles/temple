@@ -5,7 +5,6 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const root = require( 'app-root-dir' ).get()
 const pkg = require( './package.json' )
-const conf = require( './utils/config' )
 
 const temple = function( opts ) {
 
