@@ -15,7 +15,8 @@ const cli = meow({
     h: 'help',
     v: 'verbose',
     rm: 'delete',
-    a: 'all'
+    a: 'all',
+    f: 'force'
   }
 })
 const cmd = alias( cli.input[ 0 ] )

@@ -38,7 +38,13 @@ module.exports = function( opts ) {
     let value = conf.get( key )
 
     if ( typeof value === 'object' ) {
-      // @TODO prompt for confirmation on nested value
+
+      if ( opts.force ) {
+        conf.del( key )
+        return
+      }
+
+      // Prompt for confirmation
       prompt([
         {
           type: 'confirm',
