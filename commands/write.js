@@ -14,9 +14,12 @@
  */
 
 const fs = require( 'fs' )
+const path = require( 'path' )
+const cons = require( 'consolidate' )
 const store = require( '../lib/store' )
 const usage = require( '../lib/usage' )
 const pkg = require( '../package.json' )
+const root = require('app-root-dir').get()
 
 /**
  * Grabs some data and a template file and runs the template engine
@@ -67,17 +70,38 @@ function getData( filepath ) {
   }
 
   if ( process.stdin.isTTY ) {
-    console.error( `${ pkg.shortname }: No data source specified` )
-    console.error( `See '${ pkg.shortname } write --help'` )
-    process.exit( 1 )
+    // @TODO allow config to specify the root data filename rather than
+    // default to just package.json
+    return fs.createReadStream( path.join( root, 'package.json' ) )
   }
 
   return process.stdin
 }
 
 function end( template, data ) {
-  console.log( '-- finished --' )
-  console.log( template )
-  console.log( '--' )
-  console.log( data )
+  // console.log( '-- finished --' )
+  // console.log( template )
+  // console.log( '--' )
+  // console.log( data )
+  // console.log( '--' )
+
+
+  let parsed = null
+  try {
+    parsed = JSON.parse( data )
+  } catch( err ) {
+    throw new Error( 'Supplied data can not be parsed into an object' )
+    return
+  }
+
+  // @TODO either grab the engine from the opts or try to manually detect it
+  // via the file extension
+  cons.hogan.render( template.contents, parsed )
+    .then( res => {
+      console.log( 'done' )
+      process.stdout.write( res )
+    })
+    .catch( err => {
+      throw new Error( err )
+    })
 }
