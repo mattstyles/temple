@@ -3,17 +3,16 @@
 
 const fs = require( 'fs' )
 const path = require( 'path' )
-const root = require( 'app-root-dir' ).get()
 const pkg = require( './package.json' )
 
 const temple = function( opts ) {
 
-  let commands = fs.readdirSync( path.join( root, 'commands' ) )
+  let commands = fs.readdirSync( path.join( __dirname, 'commands' ) )
     .map( filename => filename.replace( /\.js$/, '' ) )
     .reduce( ( cmds, cmd ) => {
         if ( !cmds[ cmd ] ) {
           try {
-            cmds[ cmd ] = require( path.join( root, 'commands', cmd ) )
+            cmds[ cmd ] = require( path.join( __dirname, 'commands', cmd ) )
           } catch( err ) {
             throw new Error( err )
           }
