@@ -13,6 +13,11 @@ const write = require( './write' )
 const list = require( './list' )
 const usage = require( '../lib/usage' )
 
+/**
+ * Shows a specific template file
+ * @param opts <Object>
+ * @param opts._ <Array|String> templates names to show
+ */
 module.exports = function( opts ) {
 
   // Handle no template name passed to show command
