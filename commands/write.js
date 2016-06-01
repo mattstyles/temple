@@ -31,7 +31,19 @@ module.exports = function( opts ) {
 
   // Grab the store and specified template file
   let templates = store( opts.dataDir || null )
-  let template = templates.get( opts._[ 0 ] )
+  let template = null
+
+  try {
+    template = templates.get( opts._[ 0 ] )
+  } catch( err ) {
+    if ( err.code === 'ENOENT' ) {
+      console.log( 'Can not find specified template file' )
+      return
+    }
+
+    console.error( 'Something went wrong...' )
+  }
+
 
   process.stdin.setEncoding( 'utf8' )
 
