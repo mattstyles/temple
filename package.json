@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mattstyles/temple.git"
+    "url": "git+https://github.com/dotlabel/temple.git"
   },
   "keywords": [
     "template",
@@ -22,13 +22,14 @@
   "author": "Matt Styles <matt@veryfizzyjelly.com> (http://github.com/mattstyles)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mattstyles/temple/issues"
+    "url": "https://github.com/dotlabel/temple/issues"
   },
-  "homepage": "https://github.com/mattstyles/temple#readme",
+  "homepage": "https://github.com/dotlabel/temple#readme",
   "dependencies": {
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",
     "configstore": "^2.0.0",
+    "errno": "^0.1.4",
     "inquirer": "^1.0.3",
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
