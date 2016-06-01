@@ -47,6 +47,7 @@ module.exports = function write( opts ) {
     }
 
     console.error( 'Something went wrong...' )
+    throw new Error( err )
   }
 
   if ( opts.engine && opts.engine === 'none' ) {
@@ -98,7 +99,6 @@ function end( template, data ) {
   // via the file extension
   cons.hogan.render( template.contents, parsed )
     .then( res => {
-      console.log( 'done' )
       process.stdout.write( res )
     })
     .catch( err => {
