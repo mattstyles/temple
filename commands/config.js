@@ -8,6 +8,7 @@
  *   temple config path.data ~/.data
  *   temple config path.data
  *   temple config --rm path.data
+ *   temple config --all
  */
 
 const prompt = require( 'inquirer' ).prompt
@@ -16,6 +17,15 @@ const conf = require( '../utils/conf' )()
 const pkg = require( '../package.json' )
 
 
+/**
+ * Handles setting and retrieving configuration options
+ * @param opts <Object>
+ *   @param opts._ <Array|String> list of sub commands
+ *   @param opts.remove <Boolean||String> the key to remove, the key could be
+ *     passed under _
+ *   @param force <Boolean> used to force deletion of nested keys
+ *   @param all <Boolean> show all config if supplied
+ */
 module.exports = function( opts ) {
   // Handle showing everything from config
   if ( opts.all ) {

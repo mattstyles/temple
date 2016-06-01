@@ -6,6 +6,7 @@
  *
  * @example
  *   temple list
+ *   temple list --dataDir /usr/local/share/templates
  */
 
 const fs = require( 'fs' )
@@ -14,6 +15,8 @@ const store = require( '../utils/store' )
 
 /**
  * Lists all templates currently held by the store
+ * @param opts <Object>
+ *   @param dataDir <String> specific data directory to use
  */
 module.exports = function list( opts ) {
   opts = opts || {}

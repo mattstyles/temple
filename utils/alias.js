@@ -12,9 +12,16 @@ const DEFAULT_ALIASES = {
 }
 
 /**
- * Returns aliased commands
+ * Pass the dictionary to the alias function
+ * @type <Function>
  */
 const aliases = alias( DEFAULT_ALIASES )
+
+/**
+ * Returns aliased commands
+ * @param cmd <String>
+ * @returns <String>
+ */
 module.exports = function getAlias( cmd ) {
   return aliases( cmd )
 }
