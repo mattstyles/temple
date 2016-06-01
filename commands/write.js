@@ -7,22 +7,23 @@
  * @example
  *   temple write .gitignore.mustache
  *   cat data.json | temple write package.hbs > package.json
+ *   template write package < data.json > package.json
  *   temple write package -d data.json > package.json
  *   temple write package -d data.json -o package.json
  *   temple write package.tmpl -d data.json -o package.json --engine hogan
  */
 
+const fs = require( 'fs' )
 const store = require( '../lib/store' )
 const usage = require( '../lib/usage' )
+const pkg = require( '../package.json' )
 
 /**
  * Grabs some data and a template file and runs the template engine
  * @param opts <Object>
  * @param opts.dataDir <String> specific data directory to use
  */
-module.exports = function( opts ) {
-  console.log( 'write' )
-
+module.exports = function write( opts ) {
   // Handle no template name passed to write command
   if ( !opts._ || !opts._.length ) {
     usage( 'write' )
@@ -37,39 +38,46 @@ module.exports = function( opts ) {
     template = templates.get( opts._[ 0 ] )
   } catch( err ) {
     if ( err.code === 'ENOENT' ) {
-      console.log( 'Can not find specified template file' )
+      console.error( `${ pkg.shortname }: Can not find specified template file` )
+      console.error( `See '${ pkg.shortname } list'` )
       return
     }
 
     console.error( 'Something went wrong...' )
   }
 
-
-  process.stdin.setEncoding( 'utf8' )
-
-  // process.stdin.on( 'end', function() {
-  //   console.log( 'stream ended' )
-  // })
-  //
-  // process.stdin.on( 'data', function( data ) {
-  //   console.log( '-- chunk' )
-  //   console.log( data.toString() )
-  // })
-
-  // process.stdin.on( 'readable', () => {
-  //   let chunk = process.stdin.read()
-  //   if ( chunk !== null ) {
-  //     console.log( '--chunk' )
-  //     console.log( chunk )
-  //   }
-  // })
-
-
   if ( opts.engine && opts.engine === 'none' ) {
     process.stdout.write( template.contents )
     return
   }
 
-  console.log( '--template' )
+  // Get data source
+  let data = ''
+  let source = getData( opts.data )
+  source.on( 'data', chunk => {
+    data += chunk
+  })
+  source.on( 'end', () => end( template, data ) )
+}
+
+
+function getData( filepath ) {
+  if ( filepath ) {
+    return fs.createReadStream( filepath )
+  }
+
+  if ( process.stdin.isTTY ) {
+    console.error( `${ pkg.shortname }: No data source specified` )
+    console.error( `See '${ pkg.shortname } write --help'` )
+    process.exit( 1 )
+  }
+
+  return process.stdin
+}
+
+function end( template, data ) {
+  console.log( '-- finished --' )
   console.log( template )
+  console.log( '--' )
+  console.log( data )
 }

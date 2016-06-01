@@ -29,6 +29,7 @@
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",
     "configstore": "^2.0.0",
+    "consolidate": "^0.14.1",
     "errno": "^0.1.4",
     "inquirer": "^1.0.3",
     "meow": "^3.7.0",
