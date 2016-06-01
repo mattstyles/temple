@@ -11,7 +11,7 @@
 
 const fs = require( 'fs' )
 const path = require( 'path' )
-const store = require( '../utils/store' )
+const store = require( '../lib/store' )
 
 /**
  * Lists all templates currently held by the store

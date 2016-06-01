@@ -12,8 +12,8 @@
  */
 
 const prompt = require( 'inquirer' ).prompt
-const usage = require( '../utils/usage' )
-const conf = require( '../utils/conf' )()
+const usage = require( '../lib/usage' )
+const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
 
 
