@@ -18,7 +18,7 @@
  */
 
 const path = require( 'path' )
-const spawn = require( 'child_process' ).exec
+const spawn = require( 'child_process' ).spawn
 const usage = require( '../lib/usage' )
 const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
@@ -119,22 +119,21 @@ function install( name ) {
 
   // Try to install the specified module
   // Spawn a child rather include all of npm here
-  let pr = spawn( `npm install ${ engine.module } --prefix ${ path.join( __dirname, '../' ) }` )
+  let pr = spawn( 'npm', [
+    'install',
+    engine.module
+  ], {
+    cwd: path.join( __dirname, '../' )
+  })
 
   pr.stdout.on( 'data', data => {
-    console.log( `stdout: ${ data }` )
+    console.log( `${ data }` )
   })
   pr.stderr.on( 'data', data => {
-    console.log( `stderr: ${ data }` )
+    console.error( `${ data }` )
   })
   pr.on( 'close', code => {
-    console.log( `code: ${ code }` )
-  })
-  pr.on( 'error', code => {
-    console.log( `err: ${ code }` )
-  })
-  pr.on( 'message', code => {
-    console.log( `msg: ${ code }` )
+    // done
   })
 }
 
@@ -149,7 +148,6 @@ function write( name ) {
   process.stdin.on( 'end', () => {
     let spec = null
     try {
-      console.log( data )
       spec = JSON.parse( data )
     } catch( err ) {
       console.log( `${ pkg.shortname }: Can not parse engine metadata` )
