@@ -39,10 +39,13 @@ module.exports = function( opts ) {
     return
   }
 
-  let engines = conf.get( ENGINE_KEY )
-
-  console.log( 'engines' )
-  console.log( engines )
+  /**
+   * Remove an engine
+   */
+  if ( opts.delete ) {
+    remove( opts._[ 0 ] || opts.delete )
+    return
+  }
 
   /**
    * Show help on 'temple engine'
@@ -52,6 +55,7 @@ module.exports = function( opts ) {
     return
   }
 
+  let engines = conf.get( ENGINE_KEY )
   let key = opts._[ 0 ]
   let value = opts._[ 1 ]
 
@@ -76,7 +80,6 @@ module.exports = function( opts ) {
 
   // Handle setting the whole meta for an engine
   if ( keypath.length === 1 ) {
-    // @TODO should be able to pipe a json rep for this engine name
     let meta = ''
 
     // We should never hit this as we'd treat this as a get request
@@ -106,8 +109,9 @@ module.exports = function( opts ) {
       }
 
       // Otherwise remove the old copy and replace with this one
-      let index = engines.indexOf( engine )
-      engines.splice( index, 1, parsed )
+      // let index = engines.indexOf( engine )
+      // engines.splice( index, 1, parsed )
+      remove( engine.name, parsed )
     })
     return
   }
@@ -145,4 +149,26 @@ function showAll( opts ) {
       process.stdout.write( engine )
     })
   return
+}
+
+/**
+ * Removes a specified engine from the meta
+ */
+function remove( name, spec ) {
+  let engines = conf.get( ENGINE_KEY )
+  let engine = engines.find( engine => engine.name === name )
+
+  if ( !engine ) {
+    console.log( `${ pkg.shortname }: Can not find specified engine` )
+    console.log( `See '${ pkg.shortname } engine --help'` )
+    return
+  }
+
+  let index = engines.indexOf( engine )
+  if ( spec ) {
+    engines.splice( index, 1, spec )
+  } else {
+    engines.splice( index, 1 )
+  }
+  conf.set( ENGINE_KEY, engines )
 }
