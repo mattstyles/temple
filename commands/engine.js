@@ -17,6 +17,8 @@
  *   temple engine hogan --rm
  */
 
+const path = require( 'path' )
+const spawn = require( 'child_process' ).exec
 const usage = require( '../lib/usage' )
 const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
@@ -39,7 +41,7 @@ module.exports = function( opts ) {
    * Install specific engine if it exists
    */
   if ( opts.install ) {
-    install( opts )
+    install( opts._[ 0 ] || opts.install )
     return
   }
 
@@ -59,6 +61,9 @@ module.exports = function( opts ) {
     return
   }
 
+  /**
+   * Handle getting and setting engine conf data
+   */
   let engines = conf.get( ENGINE_KEY )
   let key = opts._[ 0 ]
   let value = opts._[ 1 ]
@@ -101,11 +106,36 @@ module.exports = function( opts ) {
 /**
  * Installs a specific template engine
  */
-function install( opts ) {
-
-  let key = opts._[ 0 ] || opts.install
+function install( name ) {
+  let engines = conf.get( ENGINE_KEY )
 
   // Check that we have meta data for the supplied engine
+  let engine = engines.find( engine => engine.name === name )
+  if ( !engine ) {
+    console.log( `${ pkg.shortname }: Can not find specified engine` )
+    console.log( `See '${ pkg.shortname } engine --help'` )
+    return
+  }
+
+  // Try to install the specified module
+  // Spawn a child rather include all of npm here
+  let pr = spawn( `npm install ${ engine.module } --prefix ${ path.join( __dirname, '../' ) }` )
+
+  pr.stdout.on( 'data', data => {
+    console.log( `stdout: ${ data }` )
+  })
+  pr.stderr.on( 'data', data => {
+    console.log( `stderr: ${ data }` )
+  })
+  pr.on( 'close', code => {
+    console.log( `code: ${ code }` )
+  })
+  pr.on( 'error', code => {
+    console.log( `err: ${ code }` )
+  })
+  pr.on( 'message', code => {
+    console.log( `msg: ${ code }` )
+  })
 }
 
 /**
