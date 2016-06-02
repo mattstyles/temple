@@ -22,7 +22,10 @@ module.exports = function list( opts ) {
   opts = opts || {}
   let templates = store( opts.dataDir || null )
 
+  // @TODO make tabular on --json option supplied
   templates.getAll()
     .map( name => name + '\n' )
-    .forEach( process.stdout.write, process.stdout )
+    .forEach( name => {
+      process.stdout.write( name )
+    })
 }

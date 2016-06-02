@@ -18,7 +18,8 @@ const cli = meow({
     a: 'all',
     f: 'force',
     o: 'output',
-    d: 'data'
+    d: 'data',
+    i: 'install'
   }
 })
 const cmd = alias( cli.input[ 0 ] )
