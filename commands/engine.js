@@ -8,9 +8,13 @@
  *   temple engine --all
  *   temple engine --all --json
  *   temple engine hogan
- *   temple engine hogan.extensions "hbs hogan hulk"
+ *   temple engine hogan.extensions hbs hogan hulk
+ *   echo '{"module":"hogan.js"}' | temple engine hogan
+ *   temple engine hogan < engine.json
  *   temple engine --install hogan
+ *   temple engine hogan --install
  *   temple engine --rm hogan
+ *   temple engine hogan --rm
  */
 
 const usage = require( '../lib/usage' )
@@ -74,51 +78,23 @@ module.exports = function( opts ) {
     return
   }
 
-  // Otherwise try setting the specific key for the engine
+  // Try setting the specific key for the engine
   let keypath = key.split( '.' )
-  let engine = engines.find( engine => engine.name === keypath[ 0 ] )
 
   // Handle setting the whole meta for an engine
   if ( keypath.length === 1 ) {
-    let meta = ''
-
-    // We should never hit this as we'd treat this as a get request
-    if ( process.stdin.isTTY ) {
-      console.log( `${ pkg.shortname }: Stream json to describe engine data` )
-      console.log( `See '${ pkg.shortname } engine --help'` )
-      return
-    }
-
-    process.stdin.on( 'data', data => meta += data )
-    process.stdin.on( 'end', () => {
-      let parsed = null
-      try {
-        console.log( meta )
-        parsed = JSON.parse( meta )
-      } catch( err ) {
-        console.log( `${ pkg.shortname }: Can not parse engine metadata` )
-        console.log( `See '${ pkg.shortname } engine --help'` )
-        return
-      }
-
-      // If this is a new engine then just push it on
-      if ( !engine ) {
-        engines.push( parsed )
-        conf.set( ENGINE_KEY, engines )
-        return
-      }
-
-      // Otherwise remove the old copy and replace with this one
-      // let index = engines.indexOf( engine )
-      // engines.splice( index, 1, parsed )
-      remove( engine.name, parsed )
-    })
+    write( keypath[ 0 ] )
     return
   }
 
-  // Set the specific key in the engine
-  engine[ keypath[ 1 ] ] = value
+  // Handle variadic
+  if ( opts._.length > 2 ) {
+    value = opts._.slice( 1, opts._.length )
+  }
 
+  // Handle setting a specific key
+  let engine = engines.find( engine => engine.name === keypath[ 0 ] )
+  engine[ keypath[ 1 ] ] = value
   conf.set( ENGINE_KEY, engines )
 }
 
@@ -130,6 +106,47 @@ function install( opts ) {
   let key = opts._[ 0 ] || opts.install
 
   // Check that we have meta data for the supplied engine
+}
+
+/**
+ * Writes the engine meta to the conf, grabbing it from stdin
+ */
+function write( name ) {
+  let data = ''
+  let engines = conf.get( ENGINE_KEY )
+
+  process.stdin.on( 'data', chunk => data += chunk )
+  process.stdin.on( 'end', () => {
+    let spec = null
+    try {
+      console.log( data )
+      spec = JSON.parse( data )
+    } catch( err ) {
+      console.log( `${ pkg.shortname }: Can not parse engine metadata` )
+      console.log( `See '${ pkg.shortname } engine --help'` )
+      return
+    }
+
+    // If the spec contains a name then use that as the key
+    if ( spec.name ) {
+      name = spec.name
+    } else {
+      spec.name = name
+    }
+
+    let engine = engines.find( engine => engine.name === name )
+
+    // If this is a new engine then just push it on
+    if ( !engine ) {
+      engines.push( spec )
+      conf.set( ENGINE_KEY, engines )
+      return
+    }
+
+    // Otherwise remove the old copy and replace with this one
+    remove( engine.name, spec )
+  })
+  return
 }
 
 /**
