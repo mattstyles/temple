@@ -80,18 +80,11 @@ function getData( filepath ) {
 }
 
 function end( template, data ) {
-  // console.log( '-- finished --' )
-  // console.log( template )
-  // console.log( '--' )
-  // console.log( data )
-  // console.log( '--' )
-
-
   let parsed = null
   try {
     parsed = JSON.parse( data )
   } catch( err ) {
-    throw new Error( 'Supplied data can not be parsed into an object' )
+    console.log( `${ pkg.shortname }: Can not parse data, try supplying valid json` )
     return
   }
 
