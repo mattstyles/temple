@@ -22,6 +22,7 @@ const spawn = require( 'child_process' ).spawn
 const usage = require( '../lib/usage' )
 const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
+const core = require( '../lib/engine' )
 
 const ENGINE_KEY = 'engines'
 
@@ -33,7 +34,7 @@ module.exports = function( opts ) {
    * Show all engine data
    */
   if ( opts.all ) {
-    showAll( opts )
+    core.showAll( opts )
     return
   }
 
@@ -41,7 +42,7 @@ module.exports = function( opts ) {
    * Install specific engine if it exists
    */
   if ( opts.install ) {
-    install( opts._[ 0 ] || opts.install )
+    core.install( opts._[ 0 ] || opts.install )
     return
   }
 
@@ -49,7 +50,7 @@ module.exports = function( opts ) {
    * Remove an engine
    */
   if ( opts.delete ) {
-    remove( opts._[ 0 ] || opts.delete )
+    core.remove( opts._[ 0 ] || opts.delete )
     return
   }
 
@@ -88,7 +89,7 @@ module.exports = function( opts ) {
 
   // Handle setting the whole meta for an engine
   if ( keypath.length === 1 ) {
-    write( keypath[ 0 ] )
+    core.write( keypath[ 0 ] )
     return
   }
 
@@ -100,120 +101,5 @@ module.exports = function( opts ) {
   // Handle setting a specific key
   let engine = engines.find( engine => engine.name === keypath[ 0 ] )
   engine[ keypath[ 1 ] ] = value
-  conf.set( ENGINE_KEY, engines )
-}
-
-/**
- * Installs a specific template engine
- */
-function install( name ) {
-  let engines = conf.get( ENGINE_KEY )
-
-  // Check that we have meta data for the supplied engine
-  let engine = engines.find( engine => engine.name === name )
-  if ( !engine ) {
-    console.log( `${ pkg.shortname }: Can not find specified engine` )
-    console.log( `See '${ pkg.shortname } engine --help'` )
-    return
-  }
-
-  // Try to install the specified module
-  // Spawn a child rather include all of npm here
-  let pr = spawn( 'npm', [
-    'install',
-    engine.module
-  ], {
-    cwd: path.join( __dirname, '../' )
-  })
-
-  pr.stdout.on( 'data', data => {
-    console.log( `${ data }` )
-  })
-  pr.stderr.on( 'data', data => {
-    console.error( `${ data }` )
-  })
-  pr.on( 'close', code => {
-    // done
-  })
-}
-
-/**
- * Writes the engine meta to the conf, grabbing it from stdin
- */
-function write( name ) {
-  let data = ''
-  let engines = conf.get( ENGINE_KEY )
-
-  process.stdin.on( 'data', chunk => data += chunk )
-  process.stdin.on( 'end', () => {
-    let spec = null
-    try {
-      spec = JSON.parse( data )
-    } catch( err ) {
-      console.log( `${ pkg.shortname }: Can not parse engine metadata` )
-      console.log( `See '${ pkg.shortname } engine --help'` )
-      return
-    }
-
-    // If the spec contains a name then use that as the key
-    if ( spec.name ) {
-      name = spec.name
-    } else {
-      spec.name = name
-    }
-
-    let engine = engines.find( engine => engine.name === name )
-
-    // If this is a new engine then just push it on
-    if ( !engine ) {
-      engines.push( spec )
-      conf.set( ENGINE_KEY, engines )
-      return
-    }
-
-    // Otherwise remove the old copy and replace with this one
-    remove( engine.name, spec )
-  })
-  return
-}
-
-/**
- * Renders all engine data
- */
-function showAll( opts ) {
-  let engines = conf.get( ENGINE_KEY )
-
-  if ( opts.json ) {
-    process.stdout.write( JSON.stringify( engines ) )
-    return
-  }
-  // @TODO make tabular
-  engines
-    .map( engine => engine.name + '\n' )
-    .forEach( engine => {
-      process.stdout.write( engine )
-    })
-  return
-}
-
-/**
- * Removes a specified engine from the meta
- */
-function remove( name, spec ) {
-  let engines = conf.get( ENGINE_KEY )
-  let engine = engines.find( engine => engine.name === name )
-
-  if ( !engine ) {
-    console.log( `${ pkg.shortname }: Can not find specified engine` )
-    console.log( `See '${ pkg.shortname } engine --help'` )
-    return
-  }
-
-  let index = engines.indexOf( engine )
-  if ( spec ) {
-    engines.splice( index, 1, spec )
-  } else {
-    engines.splice( index, 1 )
-  }
   conf.set( ENGINE_KEY, engines )
 }

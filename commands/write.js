@@ -17,9 +17,11 @@ const fs = require( 'fs' )
 const path = require( 'path' )
 const cons = require( 'consolidate' )
 const store = require( '../lib/store' )
+const conf = require( '../lib/conf' )()
 const usage = require( '../lib/usage' )
 const pkg = require( '../package.json' )
 const root = require('app-root-dir').get()
+const engine = require( './engine' )
 
 /**
  * Grabs some data and a template file and runs the template engine
@@ -90,11 +92,24 @@ function end( template, data ) {
 
   // @TODO either grab the engine from the opts or try to manually detect it
   // via the file extension
-  cons.hogan.render( template.contents, parsed )
+  console.log( template )
+  let engines = conf.get( 'engines' )
+  let eng = engines.find( e => {
+    return e.extensions.find( ext => ext === template.ext )
+  })
+  console.log( eng )
+
+  // If it is not installed then try to install it
+  if ( !eng.installed ) {
+
+  }
+
+  cons[ engine.name ].render( template.contents, parsed )
     .then( res => {
       process.stdout.write( res )
     })
     .catch( err => {
+      console.log( '-- oops', err.errno, err.code )
       throw new Error( err )
     })
 }
