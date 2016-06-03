@@ -34,7 +34,7 @@ const engineCore = require( '../lib/engine' )( conf.get( ENGINE_KEY ) )
 module.exports = function write( opts ) {
   // Handle no template name passed to write command
   if ( !opts._ || !opts._.length ) {
-    usage( 'write' )
+    usage( 'render' )
     return
   }
 
