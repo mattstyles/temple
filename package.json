@@ -34,9 +34,9 @@
     "inquirer": "^1.0.3",
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
-    "xdg-basedir": "^2.0.0"
+    "xdg-basedir": "^2.0.0",
+    "hogan.js": "^3.0.2"
   },
   "devDependencies": {
-    "hogan.js": "^3.0.2"
   }
 }
