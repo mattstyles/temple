@@ -34,7 +34,6 @@
     "inquirer": "^1.0.3",
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
-    "npm": "^3.9.3",
     "xdg-basedir": "^2.0.0"
   },
   "devDependencies": {
