@@ -4,10 +4,15 @@ Usage
 Stores and renders template files
 
 Commands
-  list          Lists available template files
-  write <tmpl>  Writes template file to stdout
-  config        Sets and displays configuration
-  engine        Sets and displays engine configuration
-  show          Displays a single template file
+  list            Lists available template files
+  write <tmpl>    Writes template file to stdout
+  config          Sets and displays configuration
+  engine          Sets and displays engine configuration
+  show            Displays a single template file
+  version         Displays current version information
+
+Options
+  -v, --verbose   Displays current version information
+  -h, --help      Displays help information for specific commands
 
 Run 'temple COMMAND --help' for more information on a command

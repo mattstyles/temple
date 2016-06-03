@@ -168,7 +168,7 @@ function prepRender( template, opts ) {
  * Does the actual rendering of the template and output
  */
 function render( template, data, engine, output ) {
-  store.render({
+  store().render({
     template,
     data,
     engine

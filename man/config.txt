@@ -1,0 +1,18 @@
+Usage
+  temple config KEY [args...]
+
+Get and set configuration options
+
+Options
+  -a, --all         Displays all configuration data
+  --rm, --delete    Remove a configuration key
+
+Setting data
+  temple config KEY VALUE
+  temple config path.data /usr/share/
+
+  Sets a specific key. Nested key can be specified using dot notation.
+
+Getting data
+  temple config KEY
+  temple config path

@@ -11,6 +11,7 @@
  *   temple engine hogan.extensions hbs hogan hulk
  *   echo '{"module":"hogan.js"}' | temple engine hogan
  *   temple engine hogan < engine.json
+ *   temple engine hogan -d engine.json
  *   temple engine --install hogan
  *   temple engine hogan --install
  *   temple engine --rm hogan

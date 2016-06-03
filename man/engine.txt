@@ -1,0 +1,54 @@
+Usage
+  temple engine [args...]
+
+Get, set and manage template engine specifications
+
+Options
+  -a, --all         Displays all currently specified engines
+  --json            All output as json
+  --rm, --delete    Remove an engine specification
+  -i, --install     Installs an engine from its specification
+  -d, --data        Data source to use as a specification
+
+Description
+  Template engines must be specified for use, this includes information about
+  how to installation and which filename extensions this engine handles.
+
+Displaying specified engines
+  $ temple engine --all
+  $ temple engine --all --json
+  $ temple engine NAME
+
+Setting an engine property
+  $ temple engine NAME < SPECIFICATION
+  $ temple engine NAME.KEY VALUE
+
+  The entire engine specification can be set by streaming in a specification,
+  alterations to existing specifications can also be made using dot notation
+  to specify a key and supplying a value or values.
+
+  $ temple engine hogan < hogan.json
+  $ temple engine hogan.module hogan.js
+  $ temple engine hogan.extensions hjs hogan hbs mustache
+
+Installing a new engine
+  Installation is a two-step process as the engine must be specified first.
+  There are two ways to specify an engine; either stream a specification into
+  the process or use '--data' to specify a file path to use. The following
+  examples show how to input engine specifications for the hogan templating
+  engine:
+
+  $ temple engine hogan < hogan.json
+  $ cat hogan.json | template engine hogan
+  $ template hogan -d hogan.json
+  $ echo '{"module": "hogan.js"}' | template engine hogan
+
+  Once specified a module must be installed before use (temple will prompt for
+  an install if an attempt to use it is made)
+
+  $ temple engine --install hogan
+
+  Temple attempts to install modules via npm.
+
+  Full documentation for the engine specification can be found at
+  http://github.com/dotlabel/temple.git
