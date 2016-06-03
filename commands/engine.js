@@ -18,7 +18,6 @@
  */
 
 const path = require( 'path' )
-const spawn = require( 'child_process' ).spawn
 const usage = require( '../lib/usage' )
 const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
@@ -47,7 +46,16 @@ module.exports = function engine( opts ) {
   }
 
   if ( opts.install ) {
-    // @TODO
+    let key = opts._[ 0 ] || opts.install
+    core.install( key )
+      .then( () => {
+        let engines = core.writeKey( key, 'installed', true )
+        conf.set( ENGINE_KEY, engines )
+      })
+      .catch( err => {
+        console.log( `${ pkg.shortname }: ${ err.message }` )
+        console.log( `see '${ pkg.shortname } engine --help'` )
+      })
     return
   }
 
@@ -89,6 +97,10 @@ module.exports = function engine( opts ) {
         data.name = key
       } else {
         key = data.name
+      }
+
+      if ( !data.installed ) {
+        data.installed = false
       }
 
       let engines = core.write( key, data )
