@@ -26,6 +26,7 @@ module.exports = function list( opts ) {
   templates.getAll()
     .map( name => name + '\n' )
     .forEach( name => {
+      // @TODO use lib/template show function
       process.stdout.write( name )
     })
 }

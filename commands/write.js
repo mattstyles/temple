@@ -15,13 +15,13 @@
 
 const fs = require( 'fs' )
 const path = require( 'path' )
-const cons = require( 'consolidate' )
 const store = require( '../lib/store' )
 const conf = require( '../lib/conf' )()
 const usage = require( '../lib/usage' )
 const pkg = require( '../package.json' )
 const root = require('app-root-dir').get()
-const engine = require( './engine' )
+const stream = require( '../lib/stream' )
+const core = require( '../lib/template' )
 
 /**
  * Grabs some data and a template file and runs the template engine
@@ -44,7 +44,7 @@ module.exports = function write( opts ) {
   } catch( err ) {
     if ( err.code === 'ENOENT' ) {
       console.error( `${ pkg.shortname }: Can not find specified template file` )
-      console.error( `See '${ pkg.shortname } list'` )
+      console.error( `See '${ pkg.shortname } write --help'` )
       return
     }
 
@@ -57,59 +57,64 @@ module.exports = function write( opts ) {
     return
   }
 
-  // Get data source
-  let data = ''
-  let source = getData( opts.data )
-  source.on( 'data', chunk => {
-    data += chunk
-  })
-  source.on( 'end', () => end( template, data ) )
+  // Get data and render template
+  stream( getSource( opts ) )
+    .then( render( template ) )
+    .catch( err => {
+      if ( err instanceof SyntaxError ) {
+        console.log( `${ pkg.shortname }: Can not parse data` )
+        console.log( `See '${ pkg.shortname } write --help'` )
+        return
+      }
+      console.error( 'Error streaming data source' )
+      throw new Error( err )
+    })
+
 }
 
-
-function getData( filepath ) {
-  if ( filepath ) {
-    return fs.createReadStream( filepath )
+/**
+ * Returns a data source to stream from
+ */
+function getSource( opts ) {
+  if ( opts.data ) {
+    return fs.createReadStream( opts.data )
   }
 
   if ( process.stdin.isTTY ) {
-    // @TODO allow config to specify the root data filename rather than
-    // default to just package.json
-    return fs.createReadStream( path.join( root, 'package.json' ) )
+    let pkgPath = path.join( root, 'package.json' )
+    try {
+      fs.accessSync( pkgPath, fs.F_OK )
+    } catch( err ) {
+      return process.stdin
+    }
+
+    return fs.createReadStream( pkgPath )
   }
 
+  // Catch all
   return process.stdin
 }
 
-function end( template, data ) {
-  let parsed = null
-  try {
-    parsed = JSON.parse( data )
-  } catch( err ) {
-    console.log( `${ pkg.shortname }: Can not parse data, try supplying valid json` )
-    return
-  }
+/**
+ * Returns a function ready to render a template
+ */
+function render( template ) {
+  return function( data ) {
+    // @TODO find engine to use from extension
+    // @TODO check that the engine is installed
 
-  // @TODO either grab the engine from the opts or try to manually detect it
-  // via the file extension
-  console.log( template )
-  let engines = conf.get( 'engines' )
-  let eng = engines.find( e => {
-    return e.extensions.find( ext => ext === template.ext )
-  })
-  console.log( eng )
-
-  // If it is not installed then try to install it
-  if ( !eng.installed ) {
-
-  }
-
-  cons[ engine.name ].render( template.contents, parsed )
-    .then( res => {
-      process.stdout.write( res )
+    core.render({
+      template: template.contents,
+      data: data,
+      engine: 'hogan'
     })
-    .catch( err => {
-      console.log( '-- oops', err.errno, err.code )
-      throw new Error( err )
-    })
+      .then( tmpl => {
+        process.stdout.write( tmpl )
+      })
+      .catch( err => {
+        console.log( `${ pkg.shortname }: Error rendering template` )
+        console.log( `see '${ pkg.shortname } write --help'` )
+        return
+      })
+  }
 }
