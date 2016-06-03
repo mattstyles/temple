@@ -15,13 +15,17 @@
 
 const fs = require( 'fs' )
 const path = require( 'path' )
+const prompt = require( 'inquirer' ).prompt
+const root = require('app-root-dir').get()
+const pkg = require( '../package.json' )
 const store = require( '../lib/store' )
 const conf = require( '../lib/conf' )()
 const usage = require( '../lib/usage' )
-const pkg = require( '../package.json' )
-const root = require('app-root-dir').get()
 const stream = require( '../lib/stream' )
 const core = require( '../lib/template' )
+
+const ENGINE_KEY = 'engines'
+const engineCore = require( '../lib/engine' )( conf.get( ENGINE_KEY ) )
 
 /**
  * Grabs some data and a template file and runs the template engine
@@ -59,7 +63,7 @@ module.exports = function write( opts ) {
 
   // Get data and render template
   stream( getSource( opts ) )
-    .then( render( template, opts ) )
+    .then( prepRender( template, opts ) )
     .catch( err => {
       if ( err instanceof SyntaxError ) {
         console.log( `${ pkg.shortname }: Can not parse data` )
@@ -98,11 +102,14 @@ function getSource( opts ) {
 /**
  * Returns a function ready to render a template
  */
-function render( template, opts ) {
+function prepRender( template, opts ) {
   return function( data ) {
+    let outputStream = opts.output
+      ? fs.createWriteStream( opts.output )
+      : process.stdout
 
     // Attempt to match the template extension to an engine
-    let engines = conf.get( 'engines' )
+    let engines = conf.get( ENGINE_KEY )
     let engine = engines.find( engine => {
       return engine.extensions.find( ext => ext === template.ext )
     })
@@ -114,25 +121,66 @@ function render( template, opts ) {
 
     if ( !engine ) {
       console.log( `${ pkg.shortname }: Can not find engine to use` )
-      console.log( `${ pkg.shortname }: Either specify filename extension in engine specs or supply an engine to use with --engine` )
-      console.log( `see '${ pkg.shortname } write --help'` )
+      console.log( `See '${ pkg.shortname } engine --all' for available engines` )
       return
     }
 
-    // @TODO check engine is installed
+    // Prompt to install the engine if necessary
+    if ( !engine.installed ) {
+      prompt([
+        {
+          type: 'confirm',
+          name: 'install',
+          message: `'${ engine.name }' is not installed, would you like to install it now?`,
+          default: true
+        }
+      ])
+        .then( answers => {
+          if ( answers.install ) {
+            console.log( `${ pkg.shortname }: Installing ${ engine.module } from npm` )
+            return engineCore.install( engine.name )
+          }
 
-    core.render({
-      template: template.contents,
-      data: data,
-      engine: engine.name
-    })
-      .then( tmpl => {
-        process.stdout.write( tmpl )
-      })
-      .catch( err => {
-        console.log( `${ pkg.shortname }: Error rendering template` )
-        console.log( `see '${ pkg.shortname } write --help'` )
-        return
-      })
+          throw new Error( 'cancel' )
+        })
+        .then( engines => {
+          conf.set( ENGINE_KEY, engines )
+          render( template.contents, data, engine.name, outputStream )
+        })
+        .catch( err => {
+          if ( err.message === 'cancel' ) {
+            console.log( `${ pkg.shortname }: Can not render template without an engine` )
+            console.log( `See '${ pkg.shortname } write --help'` )
+            return
+          }
+
+          console.error( 'Something went wrong installing engine' )
+          throw new Error( err )
+        })
+
+      return
+    }
+
+    render( template.contents, data, engine.name, outputStream )
   }
+}
+
+/**
+ * Does the actual rendering of the template and output
+ */
+function render( template, data, engine, output ) {
+  core.render({
+    template,
+    data,
+    engine
+  })
+    .then( tmpl => {
+      // @TODO handle -d flag
+      output.write( tmpl )
+    })
+    .catch( err => {
+      console.log( `${ pkg.shortname }: Error rendering template` )
+      console.log( `See '${ pkg.shortname } write --help'` )
+      return
+    })
 }

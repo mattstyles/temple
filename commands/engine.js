@@ -33,6 +33,7 @@ const core = engineCore( conf.get( ENGINE_KEY ) )
 module.exports = function engine( opts ) {
 
   if ( opts.delete ) {
+    // @TODO prompt for confirmation before delete
     let engines = core.remove( opts._[ 0 ] || opts.delete )
     conf.set( ENGINE_KEY, engines )
     return
