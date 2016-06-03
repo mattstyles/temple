@@ -23,6 +23,7 @@ const usage = require( '../lib/usage' )
 const conf = require( '../lib/conf' )()
 const pkg = require( '../package.json' )
 const engineCore = require( '../lib/engine' )
+const stream = require( '../lib/stream' )
 
 const ENGINE_KEY = 'engines'
 const core = engineCore( conf.get( ENGINE_KEY ) )
@@ -121,5 +122,56 @@ module.exports = function engine( opts ) {
     return
   }
 
+  if ( opts.install ) {
+    // @TODO
+    return
+  }
 
+  if ( !opts._ || !opts._.length ) {
+    usage( 'engine' )
+    return
+  }
+
+  // Handle getting and setting engine data
+  let key = opts._.shift()
+  let value = opts._.length > 1
+    ? opts._
+    : opts._[ 0 ]
+
+  // With no values and no streaming, show an engine
+  if ( ( !value || !value.length ) && process.stdin.isTTY ) {
+    core.show( key )
+    return
+  }
+
+  // @TODO handle setting a specific key
+  let keypath = key.split( '.' )
+
+  // Set the whole meta if only supplied with an engine name
+  if ( keypath.length > 1 ) {
+    let engines = core.writeKey( keypath.shift(), keypath , value )
+    conf.set( ENGINE_KEY, engines )
+    return
+  }
+
+  // Prep for setting by grabbing the data
+  stream( opts.data
+    ? fs.createReadStream( opts.data )
+    : process.stdin
+  )
+    .then( set( key, value ) )
+    .catch( err => {
+      throw new Error( 'Error streaming data source' )
+    })
+}
+
+function set( key, value ) {
+  return function( data ) {
+
+
+    console.log( key, value )
+    console.log( data.toString() )
+
+
+  }
 }
