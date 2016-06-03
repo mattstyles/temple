@@ -1,8 +1,21 @@
 Usage
-  temple COMMAND [args...]
+  temple register NAME [args...]
 
-<BLURB>
+Registers a template file
 
 Options
+  --rm, --delete    Removes a template file
+  -d, --data        Specify a data source
+  --dataDir         The directory to store the template
 
+Registering a template file
+  Will default to using stdin unless '--data' is specified as the template file
 
+  $ temple register readme.hjs < readme.hjs
+  $ temple register readme.hjs -d readme.hjs
+
+Removing a template file
+  Use the '--rm' flag to remove, although be a little careful as the name will
+  attempt to match against the first filename it finds
+
+  $ temple register --rm readme.hjs
