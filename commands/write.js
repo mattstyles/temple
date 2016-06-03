@@ -59,7 +59,7 @@ module.exports = function write( opts ) {
 
   // Get data and render template
   stream( getSource( opts ) )
-    .then( render( template ) )
+    .then( render( template, opts ) )
     .catch( err => {
       if ( err instanceof SyntaxError ) {
         console.log( `${ pkg.shortname }: Can not parse data` )
@@ -98,15 +98,33 @@ function getSource( opts ) {
 /**
  * Returns a function ready to render a template
  */
-function render( template ) {
+function render( template, opts ) {
   return function( data ) {
-    // @TODO find engine to use from extension
-    // @TODO check that the engine is installed
+
+    // Attempt to match the template extension to an engine
+    let engines = conf.get( 'engines' )
+    let engine = engines.find( engine => {
+      return engine.extensions.find( ext => ext === template.ext )
+    })
+
+    // Grab an engine if specified
+    if ( opts.engine ) {
+      engine = engines.find( engine => engine.name === opts.engine )
+    }
+
+    if ( !engine ) {
+      console.log( `${ pkg.shortname }: Can not find engine to use` )
+      console.log( `${ pkg.shortname }: Either specify filename extension in engine specs or supply an engine to use with --engine` )
+      console.log( `see '${ pkg.shortname } write --help'` )
+      return
+    }
+
+    // @TODO check engine is installed
 
     core.render({
       template: template.contents,
       data: data,
-      engine: 'hogan'
+      engine: engine.name
     })
       .then( tmpl => {
         process.stdout.write( tmpl )
