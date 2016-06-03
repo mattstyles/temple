@@ -1,10 +1,13 @@
-
 Usage
+  temple COMMAND [arg...]
+
+Stores and renders template files
+
+Commands
   list          Lists available template files
   write <tmpl>  Writes template file to stdout
-  config        Sets and displays config
+  config        Sets and displays configuration
+  engine        Sets and displays engine configuration
+  show          Displays a single template file
 
-Examples
-  $ tmpl write .gitignore > .gitignore
-
-Run 'tmpl <COMMAND> --help' for more information on a command
+Run 'temple COMMAND --help' for more information on a command

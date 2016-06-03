@@ -1,0 +1,6 @@
+Usage
+  temple show FILE
+
+Displays the raw template file
+
+Run 'temple list' to see all registered templates

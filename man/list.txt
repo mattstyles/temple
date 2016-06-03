@@ -1,0 +1,7 @@
+Usage
+  temple list
+
+Displays a list of registered templates
+
+Options
+  --dataDir   specify a directory to search for template files

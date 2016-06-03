@@ -22,7 +22,6 @@ const store = require( '../lib/store' )
 const conf = require( '../lib/conf' )()
 const usage = require( '../lib/usage' )
 const stream = require( '../lib/stream' )
-const core = require( '../lib/template' )
 
 const ENGINE_KEY = 'engines'
 const engineCore = require( '../lib/engine' )( conf.get( ENGINE_KEY ) )
@@ -169,7 +168,7 @@ function prepRender( template, opts ) {
  * Does the actual rendering of the template and output
  */
 function render( template, data, engine, output ) {
-  core.render({
+  store.render({
     template,
     data,
     engine
