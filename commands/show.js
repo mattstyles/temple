@@ -9,7 +9,7 @@
  *   temple show package.hbs
  */
 
-const write = require( './write' )
+const render = require( './render' )
 const list = require( './list' )
 const usage = require( '../lib/usage' )
 
@@ -26,7 +26,7 @@ module.exports = function( opts ) {
     return
   }
 
-  return write( Object.assign( opts, {
+  return render( Object.assign( opts, {
     engine: 'none'
   }))
 }

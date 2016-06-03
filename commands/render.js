@@ -2,15 +2,15 @@
 'use strict'
 
 /**
- * Writes out a specific template file to the current path
+ * Renders a specific template file
  *
  * @example
- *   temple write .gitignore.mustache
- *   cat data.json | temple write package.hbs > package.json
- *   template write package < data.json > package.json
- *   temple write package -d data.json > package.json
- *   temple write package -d data.json -o package.json
- *   temple write package.tmpl -d data.json -o package.json --engine hogan
+ *   temple render .gitignore.mustache
+ *   cat data.json | temple render package.hbs > package.json
+ *   template render package < data.json > package.json
+ *   temple render package -d data.json > package.json
+ *   temple render package -d data.json -o package.json
+ *   temple render package.tmpl -d data.json -o package.json --engine hogan
  */
 
 const fs = require( 'fs' )

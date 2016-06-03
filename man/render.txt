@@ -1,0 +1,41 @@
+Usage
+  temple render TEMPLATE [args...]
+
+Renders a template file using specified data, will use the nearest
+'package.json' file if it can find it.
+
+Options
+  -d, --data      Specify a file to use as a data source
+  -o, --output    Specify a file to stream the rendered template to
+  --engine        Specify an engine to use
+  --dataDir       Specify the directory to use to find templates
+
+Run 'temple list' to show a list of registered templates.
+
+Rendering a template
+  Will default to use the closest parent 'package.json' as a data source if no
+  source is supplied
+
+  $ temple render readme.hjs > readme.md
+
+  To supply a data source either stream the data in or use '--data'
+
+  $ echo '{"name":"temple"}' | temple render readme
+  $ temple render readme -d data.json
+
+  Will default to streaming the rendered template to stdout, although a file
+  can be specified using '--output'
+
+  $ temple render readme > readme.md
+  $ temple render readme -o readme.md
+
+Specifying a template engine
+  Temple will attempt to match the specified templates' file extension against
+  those specified engines that it knows about, if this is insufficient then an
+  engine can be specified using '--engine'
+
+  $ temple render readme.hjs --engine mustache
+
+  Temple will prompt to install the templating engine when necessary.
+
+  Run 'temple engine --all' to show engine specifications
