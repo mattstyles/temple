@@ -159,19 +159,22 @@ module.exports = function engine( opts ) {
     ? fs.createReadStream( opts.data )
     : process.stdin
   )
-    .then( set( key, value ) )
+    .then( data => {
+      if ( !data.name ) {
+        data.name = key
+      } else {
+        key = data.name
+      }
+
+      let engines = core.write( key, data )
+      conf.set( ENGINE_KEY, engines )
+    })
     .catch( err => {
+      if ( err instanceof SyntaxError ) {
+        console.log( `${ pkg.shortname }: Can not parse data` )
+        console.log( `see '${ pkg.shortname } engine --help'` )
+        return
+      }
       throw new Error( 'Error streaming data source' )
     })
-}
-
-function set( key, value ) {
-  return function( data ) {
-
-
-    console.log( key, value )
-    console.log( data.toString() )
-
-
-  }
 }
