@@ -27,6 +27,7 @@ module.exports = function list( opts ) {
     .map( name => name + '\n' )
     .forEach( name => {
       // @TODO use lib/template show function
+      // @TODO currently showing directories, should show only files
       process.stdout.write( name )
     })
 }
