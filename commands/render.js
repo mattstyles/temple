@@ -74,6 +74,7 @@ function errorHandler( err ) {
   if ( err instanceof EngineError ) {
     console.log( `${ pkg.shortname }: ${ err.message }` )
     console.log( `See '${ pkg.shortname } engine --all' for available engines` )
+    return
   }
 
   if ( err ) {
@@ -222,6 +223,7 @@ function checkInstall( opts ) {
 
         if ( !engine ) {
           reject( new EngineError( 'Can not find engine to use' ) )
+          return
         }
 
         let templates = store( opts.dataDir || null )
