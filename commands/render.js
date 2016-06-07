@@ -22,20 +22,28 @@ const store = require( '../lib/store' )
 const conf = require( '../lib/conf' )()
 const usage = require( '../lib/usage' )
 const stream = require( '../lib/stream' )
+const install = require( '../lib/install' )
 const NotFoundError = require( '../lib/errors' ).NotFoundError
+const EngineError = require( '../lib/errors' ).EngineError
+const ModuleNotFound = require( '../lib/errors' ).ModuleNotFound
 
 const ENGINE_KEY = 'engines'
 const engineCore = require( '../lib/engine' )( conf.get( ENGINE_KEY ) )
 
+const DEFAULT_PATH = conf.get( 'path.data' )
+
+/**
+ * Returns a thunk that queues promises, passing opts to each promise function
+ */
 function queue( opts ) {
-  return function t( tasks ) {
+  return function run( tasks ) {
     let state = []
     return new Promise( ( resolve, reject ) => {
       function next( res ) {
         state.push( res )
         if ( tasks.length ) {
           let task = tasks.shift()
-          console.log( task.name )
+          // console.log( task.name )
           return task( opts )
             .then( next )
         }
@@ -53,6 +61,9 @@ function queue( opts ) {
 }
 
 
+/**
+ * Generic error handler for render stuff
+ */
 function errorHandler( err ) {
   if ( err instanceof NotFoundError ) {
     console.error( `${ pkg.shortname }: ${ err.message }` )
@@ -60,7 +71,14 @@ function errorHandler( err ) {
     return
   }
 
-  console.error( err )
+  if ( err instanceof EngineError ) {
+    console.log( `${ pkg.shortname }: ${ err.message }` )
+    console.log( `See '${ pkg.shortname } engine --all' for available engines` )
+  }
+
+  if ( err ) {
+    console.error( err )
+  }
 }
 
 
@@ -103,19 +121,19 @@ module.exports = function render( opts ) {
 
   queue( opts )([
     getTemplate,
-    getEngine,
     checkInstall,
+    getEngine,
     getStream
   ])
     .then( res => {
       console.log( res )
     })
     .catch( errorHandler )
-
 }
 
 /**
  * Returns a data source to stream from
+ * @returns <Stream>
  */
 function getSource( opts ) {
   if ( opts.data ) {
@@ -162,6 +180,159 @@ function getTemplate( opts ) {
     }
 
     resolve( template )
+  })
+}
+
+/**
+ * Returns the desired template engine
+ */
+function getEngine( opts ) {
+  return new Promise( ( resolve, reject ) => {
+    getTemplate( opts )
+      .then( template => {
+        let engines = conf.get( ENGINE_KEY )
+        let engine = engines.find( engine => {
+          return engine.extensions.find( ext => ext === template.ext )
+        })
+
+        // Grab an engine if specified
+        if ( opts.engine ) {
+          engine = engines.find( engine => engine.name === opts.engine )
+        }
+
+        if ( !engine ) {
+          reject( new EngineError( 'Can not find engine to use' ) )
+        }
+
+        resolve( engine )
+      })
+  })
+}
+
+/**
+ * Checks that both consolidate and the required engine are installed
+ */
+function checkInstall( opts ) {
+  return new Promise( ( resolve, reject ) => {
+    getTemplate( opts )
+      .then( template => {
+        // Grab the engine first
+        let engines = conf.get( ENGINE_KEY )
+        let engine = engines.find( engine => {
+          return engine.extensions.find( ext => ext === template.ext )
+        })
+
+        // Grab an engine if specified
+        if ( opts.engine ) {
+          engine = engines.find( engine => engine.name === opts.engine )
+        }
+
+        if ( !engine ) {
+          reject( new EngineError( 'Can not find engine to use' ) )
+        }
+
+        let templates = store( opts.dataDir || null )
+
+        Promise.all([
+          templates.checkInstall( engine.module ),
+          templates.checkInstall( 'consolidate' )
+        ])
+          .then( res => {
+            Promise.resolve()
+              .then( () => {
+                console.log( '1st job running' )
+                return res[ 1 ] ? Promise.resolve() : installConsolidate( opts )
+              })
+              .then( () => {
+                console.log( '2nd job running' )
+                return res[ 0 ] ? Promise.resolve() : installModule( opts, engine )
+              })
+              .then( res => resolve( true ) )
+              .catch( reject )
+          })
+          .catch( err => {
+            reject( err )
+            return
+          })
+    })
+  })
+}
+
+/**
+ * Installs specific template engine
+ */
+function installModule( opts, engine ) {
+  return new Promise( ( resolve, reject ) => {
+    console.log( 'installing module', engine.name )
+    prompt([
+      {
+        type: 'confirm',
+        name: 'install',
+        message: `'${ engine.name }' is not installed, would you like to install it now?`,
+        default: true
+      }
+    ])
+      .then( answers => {
+        if ( answers.install ) {
+          console.log( `${ pkg.shortname }: Installing ${ engine.module } from npm` )
+          return engineCore.install( engine.name, opts.dataDir || DEFAULT_PATH )
+        }
+
+        throw new Error( 'cancel' )
+      })
+      .then( engines => {
+        conf.set( ENGINE_KEY, engines )
+        resolve( engine )
+      })
+      .catch( err => {
+        if ( err.message === 'cancel' ) {
+          console.log( `${ pkg.shortname }: Can not render template without an engine` )
+          console.log( `See '${ pkg.shortname } render --help'` )
+          reject()
+        }
+
+        reject( err )
+      })
+  })
+}
+
+/**
+ * Installs consolidate
+ */
+function installConsolidate( opts ) {
+  return new Promise( ( resolve, reject ) => {
+
+    console.log( 'installing consolidate' )
+    var name = 'consolidate'
+
+    prompt([
+      {
+        type: 'confirm',
+        name: 'install',
+        message: `'${ pkg.shortname }' needs to install a temple engine runner, would you like to install it now?`,
+        default: true
+      }
+    ])
+      .then( answers => {
+        if ( answers.install ) {
+          console.log( `${ pkg.shortname }: Installing ${ name } from npm` )
+          return install([ name ], opts.dataDir || DEFAULT_PATH )
+        }
+
+        throw new Error( 'cancel' )
+      })
+      .then( () => {
+        resolve()
+      })
+      .catch( err => {
+        if ( err.message === 'cancel' ) {
+          console.log( `${ pkg.shortname }: Can not render template without an engine runner` )
+          console.log( `See '${ pkg.shortname } render --help'` )
+          reject()
+        }
+
+        reject( err )
+      })
   })
 }
 
@@ -229,23 +400,6 @@ function prepRender( template, opts ) {
 
     render( template.contents, data, engine.name, outputStream )
   }
-}
-
-/**
- * Checks that the specified engine is installed
- */
-function getEngine() {
-  return new Promise( ( resolve, reject ) => {
-    console.log( 'Checking engine' )
-    setTimeout( resolve, 500 )
-  })
-}
-
-function checkInstall() {
-  return new Promise( ( resolve, reject ) => {
-    console.log( 'Checking consolidate' )
-    setTimeout( resolve, 500 )
-  })
 }
 
 /**
