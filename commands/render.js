@@ -105,20 +105,7 @@ module.exports = function render( opts ) {
     return
   }
 
-  // Get data and render template
-  // stream( getSource( opts ) )
-  //   .then( prepRender( template, opts ) )
-  //   .catch( err => {
-  //     if ( err instanceof SyntaxError ) {
-  //       console.log( `${ pkg.shortname }: Can not parse data` )
-  //       console.log( `See '${ pkg.shortname } render --help'` )
-  //       return
-  //     }
-  //     console.error( 'Error streaming data source' )
-  //     throw new Error( err )
-  //   })
-
-
+  // Get deps and render template
   queue( opts )([
     getTemplate,
     checkInstall,
@@ -126,7 +113,13 @@ module.exports = function render( opts ) {
     getStream
   ])
     .then( res => {
-      console.log( res )
+      let outputStream = opts.output
+        ? fs.createWriteStream( opts.output )
+        : process.stdout
+
+      // render( template.contents, data, engine.name, outputStream )
+      perform( res[ 0 ].contents, res[ 3 ], res[ 2 ].name, outputStream )
+
     })
     .catch( errorHandler )
 }
@@ -233,6 +226,7 @@ function checkInstall( opts ) {
 
         let templates = store( opts.dataDir || null )
 
+        // @TODO pretty ugly but so is this whole render code
         Promise.all([
           templates.checkInstall( engine.module ),
           templates.checkInstall( 'consolidate' )
@@ -240,11 +234,9 @@ function checkInstall( opts ) {
           .then( res => {
             Promise.resolve()
               .then( () => {
-                console.log( '1st job running' )
                 return res[ 1 ] ? Promise.resolve() : installConsolidate( opts )
               })
               .then( () => {
-                console.log( '2nd job running' )
                 return res[ 0 ] ? Promise.resolve() : installModule( opts, engine )
               })
               .then( res => resolve( true ) )
@@ -337,82 +329,15 @@ function installConsolidate( opts ) {
 }
 
 /**
- * Returns a function ready to render a template
+ * Performs the actual rendering of the template and output
  */
-function prepRender( template, opts ) {
-  return function( data ) {
-    let outputStream = opts.output
-      ? fs.createWriteStream( opts.output )
-      : process.stdout
-
-    // Attempt to match the template extension to an engine
-    let engines = conf.get( ENGINE_KEY )
-    let engine = engines.find( engine => {
-      return engine.extensions.find( ext => ext === template.ext )
-    })
-
-    // Grab an engine if specified
-    if ( opts.engine ) {
-      engine = engines.find( engine => engine.name === opts.engine )
-    }
-
-    if ( !engine ) {
-      console.log( `${ pkg.shortname }: Can not find engine to use` )
-      console.log( `See '${ pkg.shortname } engine --all' for available engines` )
-      return
-    }
-
-    // Prompt to install the engine if necessary
-    if ( !engine.installed ) {
-      prompt([
-        {
-          type: 'confirm',
-          name: 'install',
-          message: `'${ engine.name }' is not installed, would you like to install it now?`,
-          default: true
-        }
-      ])
-        .then( answers => {
-          if ( answers.install ) {
-            console.log( `${ pkg.shortname }: Installing ${ engine.module } from npm` )
-            return engineCore.install( engine.name )
-          }
-
-          throw new Error( 'cancel' )
-        })
-        .then( engines => {
-          conf.set( ENGINE_KEY, engines )
-          render( template.contents, data, engine.name, outputStream )
-        })
-        .catch( err => {
-          if ( err.message === 'cancel' ) {
-            console.log( `${ pkg.shortname }: Can not render template without an engine` )
-            console.log( `See '${ pkg.shortname } write --help'` )
-            return
-          }
-
-          console.error( 'Something went wrong installing engine' )
-          throw new Error( err )
-        })
-
-      return
-    }
-
-    render( template.contents, data, engine.name, outputStream )
-  }
-}
-
-/**
- * Does the actual rendering of the template and output
- */
-function render( template, data, engine, output ) {
+function perform( template, data, engine, output ) {
   store().render({
     template,
     data,
     engine
   })
     .then( tmpl => {
-      // @TODO handle -d flag
       output.write( tmpl )
     })
     .catch( err => {
