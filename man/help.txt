@@ -7,6 +7,7 @@ Commands
   list            Lists available template files
   show <tmpl>     Displays a single template file
   render <tmpl>   Renders template file
+  register <tmpl> Registers a template file
   config          Sets and displays configuration
   engine          Sets and displays engine configuration
   version         Displays current version information
