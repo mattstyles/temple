@@ -4,4 +4,5 @@ Usage
 Displays a list of registered templates
 
 Options
-  --dataDir   specify a directory to search for template files
+  --dataDir   Specify a directory to search for template files
+  --json      Display output as json

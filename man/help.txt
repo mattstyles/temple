@@ -5,10 +5,10 @@ Stores and renders template files
 
 Commands
   list            Lists available template files
+  show            Displays a single template file
   render <tmpl>   Renders template file
   config          Sets and displays configuration
   engine          Sets and displays engine configuration
-  show            Displays a single template file
   version         Displays current version information
 
 Options
