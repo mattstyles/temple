@@ -336,7 +336,7 @@ function installConsolidate( opts ) {
 function perform( template, data, engine, output, dataDir ) {
   store( dataDir ).render({
     template,
-    data,
+    data: Object.assign( {}, { env: process.env }, data ),
     engine
   })
     .then( tmpl => {
@@ -345,7 +345,6 @@ function perform( template, data, engine, output, dataDir ) {
     .catch( err => {
       console.log( `${ pkg.shortname }: Error rendering template` )
       console.log( `See '${ pkg.shortname } render --help'` )
-      console.error( err )
       return
     })
 }
