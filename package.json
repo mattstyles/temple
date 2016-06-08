@@ -28,6 +28,7 @@
   "dependencies": {
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",
+    "cli-table": "^0.3.1",
     "configstore": "^2.0.0",
     "errno": "^0.1.4",
     "inquirer": "^1.0.3",
@@ -35,6 +36,5 @@
     "mkdirp": "^0.5.1",
     "xdg-basedir": "^2.0.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
