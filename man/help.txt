@@ -12,7 +12,8 @@ Commands
   version         Displays current version information
 
 Options
-  -v, --verbose   Displays current version information
+  --version       Displays current version information
+  -v, --verbose   Displays verbose logging
   -h, --help      Displays help information for specific commands
 
 Run 'temple COMMAND --help' for more information on a command

@@ -33,7 +33,7 @@ Setting an engine property
 
 Installing a new engine
   Installation is a two-step process as the engine must be specified first.
-  There are two ways to specify an engine; either stream a specification into
+  There are two ways to specify an engine, either stream a specification into
   the process or use '--data' to specify a file path to use. The following
   examples show how to input engine specifications for the hogan templating
   engine:
