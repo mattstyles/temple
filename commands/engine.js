@@ -101,10 +101,6 @@ module.exports = function engine( opts ) {
         key = data.name
       }
 
-      if ( !data.installed ) {
-        data.installed = false
-      }
-
       let engines = core.write( key, data )
       conf.set( ENGINE_KEY, engines )
     })
