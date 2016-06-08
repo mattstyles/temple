@@ -119,7 +119,7 @@ module.exports = function render( opts ) {
         : process.stdout
 
       // render( template.contents, data, engine.name, outputStream )
-      perform( res[ 0 ].contents, res[ 3 ], res[ 2 ].name, outputStream )
+      perform( res[ 0 ].contents, res[ 3 ], res[ 2 ].name, outputStream, opts.dataDir )
 
     })
     .catch( errorHandler )
@@ -333,8 +333,8 @@ function installConsolidate( opts ) {
 /**
  * Performs the actual rendering of the template and output
  */
-function perform( template, data, engine, output ) {
-  store().render({
+function perform( template, data, engine, output, dataDir ) {
+  store( dataDir ).render({
     template,
     data,
     engine
@@ -345,6 +345,7 @@ function perform( template, data, engine, output ) {
     .catch( err => {
       console.log( `${ pkg.shortname }: Error rendering template` )
       console.log( `See '${ pkg.shortname } render --help'` )
+      console.error( err )
       return
     })
 }
