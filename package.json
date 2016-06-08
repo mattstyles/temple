@@ -1,7 +1,7 @@
 {
   "name": "@dotlabel/temple",
   "shortname": "temple",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Creates files from templates",
   "main": "index.js",
   "bin": {
