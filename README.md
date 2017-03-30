@@ -14,7 +14,7 @@ Temple will pull templates from its storage and use data from your `package.json
 ## Installation
 
 ```sh
-npm i -g @dotlabel/temple
+npm i -g @mattstyles/temple
 ```
 
 ## Usage

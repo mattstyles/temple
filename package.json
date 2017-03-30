@@ -1,5 +1,5 @@
 {
-  "name": "@dotlabel/temple",
+  "name": "@mattstyles/temple",
   "shortname": "temple",
   "version": "1.3.0",
   "description": "Creates files from templates",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dotlabel/temple.git"
+    "url": "git+https://github.com/mattstyles/temple.git"
   },
   "keywords": [
     "template",
@@ -22,9 +22,9 @@
   "author": "Matt Styles <matt@veryfizzyjelly.com> (http://github.com/mattstyles)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dotlabel/temple/issues"
+    "url": "https://github.com/mattstyles/temple/issues"
   },
-  "homepage": "https://github.com/dotlabel/temple#readme",
+  "homepage": "https://github.com/mattstyles/temple#readme",
   "dependencies": {
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",
