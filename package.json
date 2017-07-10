@@ -29,12 +29,14 @@
     "@mattstyles/alias": "^1.0.0",
     "app-root-dir": "^1.0.2",
     "cli-table": "^0.3.1",
-    "configstore": "^2.0.0",
+    "configstore": "^2.1.0",
     "errno": "^0.1.4",
-    "inquirer": "^1.0.3",
+    "inquirer": "^1.2.3",
     "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
     "xdg-basedir": "^2.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "standard": "^10.0.2"
+  }
 }

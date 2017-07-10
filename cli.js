@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
-'use strict'
-
-const fs = require( 'fs' )
-const meow = require( 'meow' )
-const temple = require( './' )
-const usage = require( './lib/usage' )
-const alias = require( './lib/alias' )
+const meow = require('meow')
+const temple = require('./')
+const usage = require('./lib/usage')
+const alias = require('./lib/alias')
 
 const cli = meow({
   help: false
@@ -22,23 +19,23 @@ const cli = meow({
     i: 'install'
   }
 })
-const cmd = alias( cli.input[ 0 ] )
+const cmd = alias(cli.input[0])
 
-if ( !cmd || cmd === 'help' ) {
-  usage( 0 )
+if (!cmd || cmd === 'help') {
+  usage(0)
   return
 }
 
-if ( cmd === 'version' || cli.flags.version ) {
-  process.stdout.write( cli.pkg.version )
+if (cmd === 'version' || cli.flags.version) {
+  process.stdout.write(cli.pkg.version)
   return
 }
 
-if ( cli.flags.help ) {
-  usage( cmd )
+if (cli.flags.help) {
+  usage(cmd)
   return
 }
 
 // Let's go
-temple( cli.flags )
-  .run( cmd, cli.input.slice( 1 ) )
+temple(cli.flags)
+  .run(cmd, cli.input.slice(1))

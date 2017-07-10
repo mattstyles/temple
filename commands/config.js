@@ -1,6 +1,4 @@
 
-'use strict'
-
 /**
  * Sets and displays current config options
  *
@@ -11,11 +9,10 @@
  *   temple config --all
  */
 
-const prompt = require( 'inquirer' ).prompt
-const usage = require( '../lib/usage' )
-const conf = require( '../lib/conf' )()
-const pkg = require( '../package.json' )
-
+const prompt = require('inquirer').prompt
+const usage = require('../lib/usage')
+const conf = require('../lib/conf')()
+const pkg = require('../package.json')
 
 /**
  * Handles setting and retrieving configuration options
@@ -26,31 +23,30 @@ const pkg = require( '../package.json' )
  *   @param force <Boolean> used to force deletion of nested keys
  *   @param all <Boolean> show all config if supplied
  */
-module.exports = function( opts ) {
+module.exports = function (opts) {
   // Handle showing everything from config
-  if ( opts.all ) {
-    console.log( JSON.stringify( conf.all ) )
+  if (opts.all) {
+    console.log(JSON.stringify(conf.all))
     return
   }
 
   // Handle remove or delete flags
-  if ( opts.rm ) {
+  if (opts.rm) {
     let key = opts.rm === true
       ? opts._[ 0 ]
       : opts.rm
 
-    if ( !key ) {
-      console.log( `${ pkg.shortname }: Specify key to remove` )
-      console.log( `See '${ pkg.shortname } config --help'` )
+    if (!key) {
+      console.log(`${pkg.shortname}: Specify key to remove`)
+      console.log(`See '${pkg.shortname} config --help'`)
       return
     }
 
-    let value = conf.get( key )
+    let value = conf.get(key)
 
-    if ( typeof value === 'object' ) {
-
-      if ( opts.force ) {
-        conf.del( key )
+    if (typeof value === 'object') {
+      if (opts.force) {
+        conf.del(key)
         return
       }
 
@@ -59,26 +55,25 @@ module.exports = function( opts ) {
         {
           type: 'confirm',
           name: 'remove',
-          message: `'${ key }' is a nested value, are you sure you want to delete?`,
+          message: `'${key}' is a nested value, are you sure you want to delete?`,
           default: false
         }
-      ]).then( answers => {
-        if ( answers.remove ) {
-          conf.del( key )
-          return
+      ]).then(answers => {
+        if (answers.remove) {
+          conf.del(key)
         }
       })
 
       return
     }
 
-    conf.del( key )
+    conf.del(key)
     return
   }
 
   // Handle no options passed to config command
-  if ( !opts._ || !opts._.length ) {
-    usage( 'config' )
+  if (!opts._ || !opts._.length) {
+    usage('config')
     return
   }
 
@@ -86,10 +81,10 @@ module.exports = function( opts ) {
   let value = opts._[ 1 ]
 
   // Get or set based on number of arguments
-  if ( !value ) {
-    console.log( JSON.stringify( conf.get( key ) ) )
+  if (!value) {
+    console.log(JSON.stringify(conf.get(key)))
     return
   }
 
-  conf.set( key, value )
+  conf.set(key, value)
 }
