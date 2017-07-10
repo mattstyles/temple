@@ -19,23 +19,28 @@ const cli = meow({
     i: 'install'
   }
 })
+
+function showHelp (cmd, cli) {
+  if (!cmd || cmd === 'help') {
+    usage(0)
+    return true
+  }
+
+  if (cmd === 'version' || cli.flags.version) {
+    process.stdout.write(cli.pkg.version)
+    return true
+  }
+
+  if (cli.flags.help) {
+    usage(cmd)
+    return true
+  }
+
+  return false
+}
+
 const cmd = alias(cli.input[0])
 
-if (!cmd || cmd === 'help') {
-  usage(0)
-  return
-}
-
-if (cmd === 'version' || cli.flags.version) {
-  process.stdout.write(cli.pkg.version)
-  return
-}
-
-if (cli.flags.help) {
-  usage(cmd)
-  return
-}
-
 // Let's go
-temple(cli.flags)
+showHelp(cmd, cli) || temple(cli.flags)
   .run(cmd, cli.input.slice(1))
