@@ -12,7 +12,7 @@ Options
 
 Description
   Template engines must be specified for use, this includes information about
-  how to installation and which filename extensions this engine handles.
+  how to install and which filename extensions this engine handles.
 
 Displaying specified engines
   $ temple engine --all
@@ -51,4 +51,4 @@ Installing a new engine
   Temple attempts to install modules via npm.
 
   Full documentation for the engine specification can be found at
-  http://github.com/dotlabel/temple.git
+  http://github.com/mattstyles/temple.git

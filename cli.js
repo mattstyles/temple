@@ -1,13 +1,6 @@
 #!/usr/bin/env node
 
-const meow = require('meow')
-const temple = require('./')
-const usage = require('./lib/usage')
-const alias = require('./lib/alias')
-
-const cli = meow({
-  help: false
-}, {
+const argv = require('minimist')(process.argv.slice(2), {
   alias: {
     h: 'help',
     v: 'verbose',
@@ -20,18 +13,23 @@ const cli = meow({
   }
 })
 
-function showHelp (cmd, cli) {
+const temple = require('./')
+const usage = require('./lib/usage')
+const alias = require('./lib/alias')
+
+function showHelp (cmd, argv) {
   if (!cmd || cmd === 'help') {
     usage(0)
     return true
   }
 
-  if (cmd === 'version' || cli.flags.version) {
-    process.stdout.write(cli.pkg.version)
+  if (cmd === 'version' || argv.version) {
+    let pkg = require('./package.json')
+    console.log(pkg.shortname, pkg.version)
     return true
   }
 
-  if (cli.flags.help) {
+  if (argv.help) {
     usage(cmd)
     return true
   }
@@ -39,8 +37,8 @@ function showHelp (cmd, cli) {
   return false
 }
 
-const cmd = alias(cli.input[0])
+let cmds = argv._.map(alias)
+let cmd = cmds[0]
 
 // Let's go
-showHelp(cmd, cli) || temple(cli.flags)
-  .run(cmd, cli.input.slice(1))
+showHelp(cmd, argv) || temple(cmd, argv)

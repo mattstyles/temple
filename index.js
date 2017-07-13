@@ -3,34 +3,27 @@ const fs = require('fs')
 const path = require('path')
 const pkg = require('./package.json')
 
-const temple = function (opts) {
-  let commands = fs.readdirSync(path.join(__dirname, 'commands'))
-    .map(filename => filename.replace(/\.js$/, ''))
-    .reduce((cmds, cmd) => {
-      if (!cmds[ cmd ]) {
-        try {
-          cmds[ cmd ] = require(path.join(__dirname, 'commands', cmd))
-        } catch (err) {
-          throw new Error(err)
-        }
+const basename = ext => str => path.basename(str, ext)
 
-        return cmds
-      }
-    }, {})
+const findCommand = cmd => fs
+  .readdirSync(path.join(__dirname, 'commands'))
+  .map(basename('.js'))
+  .filter(command => command === cmd)
+  .map(command => {
+    return require(path.join(__dirname, 'commands', cmd))
+  })[0]
 
-  return Object.assign(commands, {
-    run: function (cmd, args) {
-      if (!commands[ cmd ]) {
-        console.log(`${pkg.shortname}: '${cmd}' is not a command`)
-        console.log(`See '${pkg.shortname} --help'`)
-        return
-      }
+const temple = (cmd, args) => {
+  let command = findCommand(cmd)
 
-      // Run command
-      commands[ cmd ](Object.assign(opts, {
-        _: args
-      }))
-    }
+  if (!command) {
+    console.log(`${cmd} is not a command`)
+    console.log(`See '${pkg.shortname} --help'`)
+    return
+  }
+
+  command({
+    _: args
   })
 }
 

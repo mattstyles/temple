@@ -162,7 +162,7 @@ function getTemplate (opts) {
     let template = null
 
     try {
-      template = templates.get(opts._[ 0 ])
+      template = templates.get(opts._[0])
     } catch (err) {
       reject(err)
     }
