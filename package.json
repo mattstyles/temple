@@ -3,12 +3,28 @@
   "shortname": "temple",
   "version": "1.4.0",
   "description": "Creates files from templates",
-  "main": "index.js",
+  "main": "lib/index.js",
   "bin": {
-    "temple": "cli.js"
+    "temple": "lib/cli.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "standard",
+    "flow": "flow",
+    "build": "babel src -d lib",
+    "watch": "watch 'flow && npm run build' src",
+    "prepublish": "npm run build"
+  },
+  "babel": {
+    "presets": [
+      "flow"
+    ]
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "**/node_modules/**"
+    ]
   },
   "repository": {
     "type": "git",
@@ -32,11 +48,14 @@
     "configstore": "^2.1.0",
     "errno": "^0.1.4",
     "inquirer": "^1.2.3",
-    "meow": "^3.7.0",
     "mkdirp": "^0.5.1",
     "xdg-basedir": "^2.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.49.1",
     "standard": "^10.0.2"
   }
 }

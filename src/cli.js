@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+// @flow
+
+const temple = require('./')
+const usage = require('./core/usage')
+const alias = require('./core/alias')
+const pkg = require('../package.json')
 const argv = require('minimist')(process.argv.slice(2), {
   alias: {
     h: 'help',
@@ -13,18 +19,15 @@ const argv = require('minimist')(process.argv.slice(2), {
   }
 })
 
-const temple = require('./')
-const usage = require('./lib/usage')
-const alias = require('./lib/alias')
-
-function showHelp (cmd, argv) {
+function showHelp (cmd: string, argv): boolean {
+  console.log('~~', cmd)
   if (!cmd || cmd === 'help') {
+    console.log('no command')
     usage(0)
     return true
   }
 
   if (cmd === 'version' || argv.version) {
-    let pkg = require('./package.json')
     console.log(pkg.shortname, pkg.version)
     return true
   }
@@ -37,8 +40,8 @@ function showHelp (cmd, argv) {
   return false
 }
 
-let cmds = argv._.map(alias)
-let cmd = cmds[0]
+const cmds: Array<string> = argv._.map(alias)
+const cmd: string = cmds[0]
 
 // Let's go
 showHelp(cmd, argv) || temple(cmd, argv)

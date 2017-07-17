@@ -1,16 +1,18 @@
 
 const fs = require('fs')
 const path = require('path')
-const pkg = require('./package.json')
+const pkg = require('../package.json')
 
 const basename = ext => str => path.basename(str, ext)
 
+const modulePath = path.join(__dirname, 'modules')
+
 const findCommand = cmd => fs
-  .readdirSync(path.join(__dirname, 'commands'))
+  .readdirSync(modulePath)
   .map(basename('.js'))
   .filter(command => command === cmd)
   .map(command => {
-    return require(path.join(__dirname, 'commands', cmd))
+    return require(path.join(modulePath, cmd))
   })[0]
 
 const temple = (cmd, args) => {

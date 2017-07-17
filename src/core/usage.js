@@ -25,6 +25,8 @@ module.exports = function usage (cmd, code) {
   }
   let file = path.join(__dirname, '../man', cmd + '.txt')
 
+  console.log(file)
+
   fs.createReadStream(file)
     .once('end', end(code))
     .on('error', function (err) {
