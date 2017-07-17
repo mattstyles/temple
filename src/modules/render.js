@@ -15,17 +15,19 @@ const fs = require('fs')
 const path = require('path')
 const prompt = require('inquirer').prompt
 const root = require('app-root-dir').get()
-const pkg = require('../package.json')
-const store = require('../lib/store')
-const conf = require('../lib/conf')()
-const usage = require('../lib/usage')
-const stream = require('../lib/stream')
-const install = require('../lib/install')
-const NotFoundError = require('../lib/errors').NotFoundError
-const EngineError = require('../lib/errors').EngineError
+const pkg = require('../../package.json')
+const store = require('../core/store')
+const conf = require('../core/conf')()
+const usage = require('../core/usage')
+const stream = require('../core/stream')
+const install = require('../core/install')
+const {
+  NotFoundError,
+  EngineError
+} = require('../core/errors')
 
 const ENGINE_KEY = 'engines'
-const engineCore = require('../lib/engine')(conf.get(ENGINE_KEY))
+const engineCore = require('../core/engine')(conf.get(ENGINE_KEY))
 
 const DEFAULT_PATH = conf.get('path.data')
 

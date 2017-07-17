@@ -17,11 +17,11 @@
  */
 
 const fs = require('fs')
-const usage = require('../lib/usage')
-const conf = require('../lib/conf')()
-const pkg = require('../package.json')
-const engineCore = require('../lib/engine')
-const stream = require('../lib/stream')
+const usage = require('../core/usage')
+const conf = require('../core/conf')()
+const pkg = require('../../package.json')
+const engineCore = require('../core/engine')
+const stream = require('../core/stream')
 
 const ENGINE_KEY = 'engines'
 const core = engineCore(conf.get(ENGINE_KEY))

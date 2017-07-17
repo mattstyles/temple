@@ -23,9 +23,7 @@ module.exports = function usage (cmd, code) {
     code = cmd || 0
     cmd = 'help'
   }
-  let file = path.join(__dirname, '../man', cmd + '.txt')
-
-  console.log(file)
+  let file = path.join(__dirname, '../../man', cmd + '.txt')
 
   fs.createReadStream(file)
     .once('end', end(code))

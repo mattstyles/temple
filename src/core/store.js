@@ -7,7 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const mkdirp = require('mkdirp')
 const conf = require('./conf')()
-const NotFoundError = require('./errors').NotFoundError
+const {NotFoundError} = require('./errors')
 
 /**
  * The default path is stored in the config

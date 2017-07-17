@@ -1,8 +1,8 @@
 
 const fs = require('fs')
-const pkg = require('../package.json')
-const store = require('../lib/store')
-const usage = require('../lib/usage')
+const pkg = require('../../package.json')
+const store = require('../core/store')
+const usage = require('../core/usage')
 
 /**
  * Registers a template with the system

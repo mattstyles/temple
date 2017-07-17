@@ -8,12 +8,12 @@
  */
 
 const path = require('path')
-const store = require('../lib/store')
-const conf = require('../lib/conf')()
+const store = require('../core/store')
+const conf = require('../core/conf')()
 const Table = require('cli-table')
 
 const ENGINE_KEY = 'engines'
-const engineCore = require('../lib/engine')(conf.get(ENGINE_KEY))
+const engineCore = require('../core/engine')(conf.get(ENGINE_KEY))
 
 /**
  * Lists all templates currently held by the store

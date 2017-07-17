@@ -5,7 +5,7 @@
 
 const path = require('path')
 const Configstore = require('configstore')
-const pkg = require('../package.json')
+const pkg = require('../../package.json')
 const basedir = require('xdg-basedir')
 
 /**

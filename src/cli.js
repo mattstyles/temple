@@ -20,15 +20,14 @@ const argv = require('minimist')(process.argv.slice(2), {
 })
 
 function showHelp (cmd: string, argv): boolean {
-  console.log('~~', cmd)
-  if (!cmd || cmd === 'help') {
-    console.log('no command')
-    usage(0)
+  if (cmd === 'version' || argv.version) {
+    console.log(pkg.shortname, pkg.version)
     return true
   }
 
-  if (cmd === 'version' || argv.version) {
-    console.log(pkg.shortname, pkg.version)
+  if (!cmd || cmd === 'help') {
+    console.log('no command')
+    usage(0)
     return true
   }
 

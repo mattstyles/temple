@@ -4,8 +4,10 @@
  */
 
 const install = require('./install')
-const NotFoundError = require('./errors').NotFoundError
-const EngineError = require('./errors').EngineError
+const {
+  NotFoundError,
+  EngineError
+} = require('./errors')
 
 const engineCore = function (engines) {
   let core = {

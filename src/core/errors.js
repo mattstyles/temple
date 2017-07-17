@@ -1,15 +1,15 @@
 
-const createError = require('errno').create
+const {create} = require('errno')
 
-const NotFoundError = createError('NotFoundError')
+const NotFoundError = create('NotFoundError')
 NotFoundError.prototype.code = 'ENOENT'
 NotFoundError.prototype.errno = 34
 
-const ModuleNotFound = createError(NotFoundError)
+const ModuleNotFound = create(NotFoundError)
 ModuleNotFound.prototype.code = 'MODULE_NOT_FOUND'
 
 module.exports = {
   NotFoundError,
-  EngineError: createError('EngineError'),
+  EngineError: create('EngineError'),
   ModuleNotFound
 }

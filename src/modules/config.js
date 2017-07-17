@@ -10,9 +10,9 @@
  */
 
 const prompt = require('inquirer').prompt
-const usage = require('../lib/usage')
-const conf = require('../lib/conf')()
-const pkg = require('../package.json')
+const usage = require('../core/usage')
+const conf = require('../core/conf')()
+const pkg = require('../../package.json')
 
 /**
  * Handles setting and retrieving configuration options
