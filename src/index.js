@@ -13,8 +13,8 @@ const findCommand = (cmd: string) => unbox(fs
   .map(req(path.join(modulePath, cmd + '.js')))
 )
 
-const temple = (cmd, args) => {
-  let command = findCommand(cmd)
+const temple = (cmd: string, args: Object) => {
+  const command: Function = findCommand(cmd)
 
   if (!command) {
     console.log(`${cmd} is not a command`)

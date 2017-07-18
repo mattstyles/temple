@@ -26,8 +26,7 @@ function showHelp (cmd: string, argv): boolean {
   }
 
   if (!cmd || cmd === 'help') {
-    console.log('no command')
-    usage(0)
+    usage('help')
     return true
   }
 

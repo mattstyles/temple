@@ -4,29 +4,24 @@ const path = require('path')
 
 /**
  * Returns a function that exits the process with the specified exit code
- * @param code <Integer> _0_ exit code
- * @returns <Function>
  */
-function end (code) {
-  return function () {
-    process.exit(code || 0)
-  }
+function end () {
+  process.exit(0)
 }
 
 /**
  * Displays the documentation for a specific ccommand
  * @param cmd <String> refers to the command, keyed by filename
- * @param code <Integer> _0_ the exit code to display
  */
-module.exports = function usage (cmd, code) {
-  if (typeof cmd === 'number' || !cmd) {
-    code = cmd || 0
+module.exports = function usage (cmd: string) {
+  if (!cmd) {
     cmd = 'help'
   }
-  let file = path.join(__dirname, '../../man', cmd + '.txt')
+
+  const file = path.join(__dirname, '../../man', cmd + '.txt')
 
   fs.createReadStream(file)
-    .once('end', end(code))
+    .once('end', end)
     .on('error', function (err) {
       if (err.code === 'ENOENT') {
         console.log('Can not find help for this command')

@@ -1,9 +1,14 @@
 [ignore]
+.*lib/*
+.*man/*
+.*node_modules/*
 
 [include]
+.*src/*
 
 [libs]
 
 [options]
+all=true
 
 [lints]
