@@ -3,9 +3,9 @@
  * Returns the data from a source
  */
 
-module.exports = function (source) {
+module.exports = function stream (source: any) {
   return new Promise((resolve, reject) => {
-    let data = ''
+    let data: string = ''
 
     source.on('data', ch => {
       data += ch
@@ -17,6 +17,6 @@ module.exports = function (source) {
         reject(err)
       }
     })
-    source.on('error', err => reject(err))
+    source.on('error', reject)
   })
 }

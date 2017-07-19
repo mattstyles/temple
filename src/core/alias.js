@@ -20,6 +20,6 @@ const aliases = alias(DEFAULT_ALIASES)
  * @param cmd <String>
  * @returns <String>
  */
-module.exports = function getAlias (cmd) {
+module.exports = function getAlias (cmd: string) {
   return aliases(cmd)
 }

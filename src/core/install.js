@@ -8,7 +8,7 @@ const spawn = require('child_process').spawn
 
 const DEFAULT_INSTALL_PATH = path.join(__dirname, '../')
 
-module.exports = function install (modules, installPath) {
+module.exports = function install (modules: Array<string>, installPath: string) {
   return new Promise((resolve, reject) => {
     spawn('npm', [
       'install', ...modules

@@ -9,12 +9,12 @@ const {
   EngineError
 } = require('./errors')
 
-const engineCore = function (engines) {
+const engineCore = function (engines: Array<Object>) {
   let core = {
     /**
      * Writes the spec to the engine, replacing if necessary
      */
-    write: function (name, spec) {
+    write: function (name: string, spec: Object) {
       let engine = core.get(name)
 
       if (engine) {
@@ -30,27 +30,27 @@ const engineCore = function (engines) {
     /**
      * Sets a specific key for an engine
      */
-    writeKey: function (name, key, value) {
+    writeKey: function (name: string, key: string|Array<string>, value: any) {
       // If the key is a keypath described as an array
       // then only consider the first key
       if (Array.isArray(key)) {
-        key = key[ 0 ]
+        key = key[0]
       }
 
       if (key === 'extensions' && typeof value === 'string') {
-        value = [ value ]
+        value = [value]
       }
 
-      let engine = core.get(name)
-      engine[ key ] = value
+      let engine: Object = core.get(name)
+      engine[key] = value
       return engines
     },
 
     /**
      * Removes an engine
      */
-    remove: function (name) {
-      let engine = core.get(name)
+    remove: function (name: string) {
+      let engine: Object = core.get(name)
       if (engine) {
         engines.splice(engines.indexOf(engine), 1)
       }
@@ -61,15 +61,15 @@ const engineCore = function (engines) {
     /**
      * Gets via the name of the engine
      */
-    get: function (name) {
-      return engines.find(engine => engine.name === name)
+    get: function (name: string): Object|null {
+      return engines.find(engine => engine.name === name) || null
     },
 
     /**
      * Searches for a matching extension
      * Returns the first match it finds
      */
-    find: function (ext) {
+    find: function (ext: string) {
       return engines.find(engine => {
         return engine.extensions.find(e => e === ext)
       })
@@ -78,19 +78,22 @@ const engineCore = function (engines) {
     /**
      * @TODO show tabular without json flag
      */
-    show: function (name, opts) {
+    show: function (name: string, opts: Object) {
       opts = opts || {
         json: false
       }
 
       let engine = core.get(name)
-      process.stdout.write(opts.json ? JSON.stringify(engine) : engine.name)
+      process.stdout.write(opts.json
+        ? JSON.stringify(engine)
+        : engine.name
+      )
     },
 
     /**
      * Renders all engine data
      */
-    showAll: function (opts) {
+    showAll: function (opts: Object) {
       opts = opts || {
         json: false
       }
@@ -111,9 +114,9 @@ const engineCore = function (engines) {
     /**
      * Installs a specific template engine
      */
-    install: function (name, installPath) {
+    install: function (name: string, installPath: string) {
       return new Promise((resolve, reject) => {
-        let engine = core.get(name)
+        const engine: Object = core.get(name)
 
         if (!engine) {
           throw new NotFoundError('Engine not found')
@@ -123,7 +126,7 @@ const engineCore = function (engines) {
           throw new EngineError('Can not find module name to install')
         }
 
-        install([ engine.module ], installPath)
+        install([engine.module], installPath)
           .then(() => {
             resolve(engines)
           })

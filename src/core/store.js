@@ -19,9 +19,7 @@ const DEFAULT_PATH = conf.get('path.data')
  * Returns the store manager object
  * @param dataDir <String> the path to the data directory
  */
-module.exports = function store (dataDir) {
-  dataDir = dataDir || DEFAULT_PATH
-
+module.exports = function store (dataDir: string = DEFAULT_PATH) {
   // Make sure the directory exists
   mkdirp.sync(dataDir)
 
@@ -38,12 +36,13 @@ module.exports = function store (dataDir) {
      * Grabs a single template file from the data directory
      * @param name <String>
      */
-    get: function (name) {
+    get: function (name: string) {
       if (!name) {
         throw new Error('No template specified')
       }
 
-      let file = fs.readdirSync(dataDir)
+      const file = fs
+        .readdirSync(dataDir)
         .find(filename => new RegExp(name).test(filename))
 
       if (!file) {
@@ -65,8 +64,8 @@ module.exports = function store (dataDir) {
      * @param name <String>
      * @param source <ReadStream>
      */
-    set: function (name, source) {
-      let stream = fs.createWriteStream(path.join(dataDir, name))
+    set: function (name: string, source: any) {
+      const stream = fs.createWriteStream(path.join(dataDir, name))
       source
         .pipe(stream)
     },
@@ -75,7 +74,7 @@ module.exports = function store (dataDir) {
      * Removes a template file
      * @param name <String>
      */
-    remove: function (name) {
+    remove: function (name: string) {
       let template = core.get(name)
       fs.unlinkSync(path.join(dataDir, template.filename))
     },
@@ -89,24 +88,25 @@ module.exports = function store (dataDir) {
      * @param opts.cons <Object> consolidate module to use
      * @returns <Promise> resolved with rendered templated string
      */
-    render: function (opts) {
+    render: function (opts: Object) {
       if (!opts) {
         throw new Error('Options need to be passed to render a template')
       }
 
       if (!opts.cons) {
-        opts.cons = require(path.join(dataDir, 'node_modules', 'consolidate'))
+        const pathname = path.join(dataDir, 'node_modules', 'consolidate')
+        opts.cons = require(pathname)
       }
 
-      return opts.cons[ opts.engine ].render(opts.template, opts.data)
+      return opts.cons[opts.engine].render(opts.template, opts.data)
     },
 
     /**
      * Checks that a dependency has been installed
      */
-    checkInstall (name) {
+    checkInstall (name: string) {
       return new Promise((resolve, reject) => {
-        var dir = null
+        var dir: Array<string> = []
         try {
           dir = fs.readdirSync(path.join(dataDir, 'node_modules'))
         } catch (err) {
