@@ -23,7 +23,8 @@
   "standard": {
     "parser": "babel-eslint",
     "ignore": [
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "flow-typed"
     ]
   },
   "repository": {
